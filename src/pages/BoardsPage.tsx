@@ -1,6 +1,6 @@
 const BoardsPage = () => {
   return (
-    <div>
+    <div role="boards">
       <p>boards page</p>
     </div>
   );
