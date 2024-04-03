@@ -1,7 +1,12 @@
+import MainNav from "../components/MainNav";
+
 const HomePage = () => {
   return (
-    <div>
-      <p>home page</p>
+    <div className="flex flex-row">
+      <MainNav />
+      <div>
+        <p>home page</p>
+      </div>
     </div>
   );
 };

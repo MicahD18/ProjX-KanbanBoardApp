@@ -4,7 +4,12 @@ import daisyui from "daisyui";
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        medium_gray: "#3E3F4E",
+        cool_gray: "#E4EBFA",
+      },
+    },
   },
   plugins: [daisyui],
 };
