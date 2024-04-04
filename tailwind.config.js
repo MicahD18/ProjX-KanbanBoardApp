@@ -7,7 +7,11 @@ export default {
     extend: {
       colors: {
         medium_gray: "#3E3F4E",
+        light_gray: "#828FA3",
         cool_gray: "#E4EBFA",
+        // primary button
+        primary_btn_idle: "#635FC7",
+        primary_btn_hover: "#A8A4FF",
       },
     },
   },
