@@ -6,13 +6,22 @@ import AddIcon from "@mui/icons-material/Add";
 import { boards } from "../data/data.json";
 import { useEffect } from "react";
 
+// models
+import { Board, Column } from "../models/board.model";
+import { useDispatch } from "react-redux";
+import { setSelectedBoard } from "../actions/boardActions";
+
 const Sidebar = () => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
     console.log(boards);
   }, []);
 
-  const handleSelectItem = (item: any) => {
-    console.log(item);
+  const handleSelectBoard = (board: Column[]) => {
+    console.log(board);
+    // 1. dispatch the setSelectedBoard action with the selected board data
+    dispatch(setSelectedBoard(board));
   };
 
   return (
@@ -30,10 +39,10 @@ const Sidebar = () => {
             ALL BOARDS ({boards.length})
           </p>
           <div className="flex flex-col gap-3 mt-6">
-            {boards.map((board) => (
+            {boards.map((board: Board) => (
               <button
                 key={board.id}
-                onClick={() => handleSelectItem(board.columns)}
+                onClick={() => handleSelectBoard(board.columns)}
                 className="py-2 text-medium_gray font-semibold flex flex-row gap-2 cursor-pointer px-2 hover:bg-primary_btn_hover hover:text-white rounded-md transition duration-300"
               >
                 <SpaceDashboardIcon />
