@@ -2,7 +2,9 @@
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
-import BoardsPage from "./pages/BoardsPage";
+import BoardPage from "./pages/BoardPage";
+import { Provider } from "react-redux";
+import store from "./store";
 
 const Layout = () => {
   return (
@@ -23,7 +25,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <BoardsPage />,
+        element: <BoardPage />,
       },
     ],
   },
@@ -31,9 +33,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <div>
+    <Provider store={store}>
       <RouterProvider router={router} />
-    </div>
+    </Provider>
   );
 }
 

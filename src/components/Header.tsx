@@ -1,8 +1,16 @@
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { useSelector } from "react-redux";
+import { useMemo } from "react";
 
 const Header = () => {
+  const selectedName = useSelector(
+    (state: { selectedBoardReducer: { name: string | null } }) =>
+      state.selectedBoardReducer?.name
+  );
+  const memoizedSelectedName = useMemo(() => selectedName, [selectedName]);
+
   return (
     <div
       role="header"
@@ -14,7 +22,7 @@ const Header = () => {
           <p className="ml-2 plus-jakarta font-extrabold">ProjX</p>
         </div>
         <p className="plus-jakarta text-medium_gray font-semibold">
-          "Board Name"
+          {memoizedSelectedName}
         </p>
       </div>
       <div className="flex flex-row items-center gap-4">
