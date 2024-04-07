@@ -6,22 +6,22 @@ import { useMemo } from "react";
 
 const Header = () => {
   const selectedName = useSelector(
-    (state: { selectedBoardReducer: { name: string | null } }) =>
-      state.selectedBoardReducer?.name
+    (state: { boardReducer: { name: string | null } }) =>
+      state.boardReducer?.name
   );
   const memoizedSelectedName = useMemo(() => selectedName, [selectedName]);
 
   return (
     <div
       role="header"
-      className="w-full bg-white h-20 flex flex-row justify-between items-center px-2 pl-6 lg:pl-0"
+      className="w-full bg-white h-20 flex flex-row justify-between items-center px-2 pl-4 md:pl-20"
     >
-      <div className="flex flex-row w-[350px] lg:w-[450px] justify-between">
+      <div className="flex flex-row w-[450px] justify-between">
         <div className="flex flex-row text-[#635FC7] text-xl items-center">
           <DashboardIcon />
           <p className="ml-2 plus-jakarta font-extrabold">ProjX</p>
         </div>
-        <p className="plus-jakarta text-medium_gray font-semibold">
+        <p className="plus-jakarta text-medium_gray font-semibold w-44">
           {memoizedSelectedName}
         </p>
       </div>

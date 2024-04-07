@@ -12,7 +12,7 @@ const initialState: State = {
 };
 // 3. Reducer handles the "SET_SELECTED_BOARD" action, by updating the state.data
 // with the new action.payload
-export default function columnsReducer(
+export default function boardReducer(
   state = initialState,
   action: PayloadAction<Column[] | string>
 ) {
@@ -31,18 +31,3 @@ export default function columnsReducer(
       return state;
   }
 }
-
-// export default function nameReducer(
-//   state = initialState,
-//   action: PayloadAction<string>
-// ) {
-//   switch (action.type) {
-//     case "SET_NAME":
-//       return {
-//         ...state,
-//         data: action.payload,
-//       };
-//     default:
-//       return state;
-//   }
-// }

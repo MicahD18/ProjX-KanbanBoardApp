@@ -4,6 +4,7 @@ export interface Subtask {
 }
 
 export interface Task {
+  id: number;
   title: string;
   description: string;
   status: string;
@@ -11,6 +12,7 @@ export interface Task {
 }
 
 export interface Column {
+  id: number;
   name: string;
   tasks: Task[];
 }

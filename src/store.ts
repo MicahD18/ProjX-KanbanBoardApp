@@ -1,8 +1,8 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import columnsReducer from "./reducers/boardReducers";
+import boardReducer from "./reducers/boardReducers";
 
 const rootReducer = combineReducers({
-  columnsReducer: columnsReducer,
+  boardReducer: boardReducer,
 });
 
 const store = configureStore({
