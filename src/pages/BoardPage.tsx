@@ -9,6 +9,7 @@ import {
   DragOverlay,
   KeyboardSensor,
   PointerSensor,
+  closestCorners,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -95,6 +96,7 @@ const BoardPage = () => {
               </div>
               <DndContext
                 sensors={sensors}
+                collisionDetection={closestCorners}
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
@@ -118,11 +120,19 @@ const BoardPage = () => {
     </div>
   );
 
+  function findContainer(id: number) {
+    if (id in memoizedSelectedColumns) {
+      return id;
+    }
+    console.log(id, memoizedSelectedColumns);
+
+    // return Object.keys(items).find((key) => items[key].includes(id));
+  }
+
   function handleDragStart(event) {
-    console.log(`Picked up draggable item.`);
     const { active } = event;
     const { id } = active;
-    console.log(active);
+    console.log(`Picked up draggable item ${id}`);
 
     setActiveId(id);
   }
@@ -130,13 +140,17 @@ const BoardPage = () => {
   function handleDragOver(event) {
     const { active, over, draggingRect } = event;
     const { id } = active;
+    const { id: overId } = over;
 
-    if (over) {
-      const { id: overId } = over;
-      console.log(active, over, draggingRect);
-    } else {
-      console.log("No drop target.");
-    }
+    // if (over) {
+    //   console.log(active, over, draggingRect);
+    // } else {
+    //   console.log("No drop target.");
+    // }
+
+    // Find the containers
+    const activeContainer = findContainer(id);
+    const overContainer = findContainer(overId);
   }
 
   function handleDragEnd(event) {
@@ -144,6 +158,9 @@ const BoardPage = () => {
     const { id } = active;
     const { id: overId } = over;
     console.log(active, over);
+    console.log(
+      `Draggable item ${id} was dropped over droppable area ${overId}`
+    );
 
     setActiveId(null);
   }
