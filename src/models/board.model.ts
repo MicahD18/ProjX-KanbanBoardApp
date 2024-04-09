@@ -12,7 +12,7 @@ export interface Task {
 }
 
 export interface Column {
-  id: number;
+  id: number | string;
   name: string;
   tasks: Task[];
 }

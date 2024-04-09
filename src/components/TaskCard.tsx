@@ -1,7 +1,23 @@
-const TaskCard = () => {
+import { useSortable } from "@dnd-kit/sortable";
+import { Task } from "../models/board.model";
+
+interface Props {
+  task: Task;
+}
+
+const TaskCard: React.FC<Props> = ({ task }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: task.id });
+
   return (
-    <div>
-      <p>TaskCard</p>
+    <div className="card w-full bg-white shadow-md" ref={setNodeRef}>
+      <div className="card-body">
+        <p className="card-title text-black text-sm">{task.title}</p>
+        <p>{task.subtasks.length} subtasks</p>
+      </div>
+      <button {...attributes} {...listeners}>
+        Drag
+      </button>
     </div>
   );
 };

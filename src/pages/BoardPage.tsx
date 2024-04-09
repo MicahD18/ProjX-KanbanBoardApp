@@ -1,9 +1,19 @@
 import { useSelector } from "react-redux";
 import MainNav from "../components/MainNav";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Column } from "../models/board.model";
 import ColumnComponent from "../components/Column";
 import AddIcon from "@mui/icons-material/Add";
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import DragItem from "../components/DragItem";
 
 const BoardPage = () => {
   // 4. Use the useSelector hook to get the state.setSelectedBoard object,
@@ -17,6 +27,15 @@ const BoardPage = () => {
   const memoizedSelectedColumns = useMemo(
     () => selectedColumns,
     [selectedColumns]
+  );
+
+  const [activeId, setActiveId] = useState(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
   );
 
   {
@@ -74,7 +93,19 @@ const BoardPage = () => {
                   {column.name.toLocaleUpperCase()} ({column.tasks.length})
                 </p>
               </div>
-              <ColumnComponent tasks={column.tasks} />
+              <DndContext
+                sensors={sensors}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragEnd={handleDragEnd}
+              >
+                <ColumnComponent id={String(column.id)} tasks={column.tasks} />
+                {column.tasks.map((task) => (
+                  <DragOverlay key={task.id}>
+                    {activeId ? <DragItem task={task} /> : null}
+                  </DragOverlay>
+                ))}
+              </DndContext>
             </div>
           ))}
           <div className="mt-[120px] w-80 bg-off_gray flex flex-col items-center justify-center rounded-md">
@@ -86,6 +117,36 @@ const BoardPage = () => {
       </div>
     </div>
   );
+
+  function handleDragStart(event) {
+    console.log(`Picked up draggable item.`);
+    const { active } = event;
+    const { id } = active;
+    console.log(active);
+
+    setActiveId(id);
+  }
+
+  function handleDragOver(event) {
+    const { active, over, draggingRect } = event;
+    const { id } = active;
+
+    if (over) {
+      const { id: overId } = over;
+      console.log(active, over, draggingRect);
+    } else {
+      console.log("No drop target.");
+    }
+  }
+
+  function handleDragEnd(event) {
+    const { active, over } = event;
+    const { id } = active;
+    const { id: overId } = over;
+    console.log(active, over);
+
+    setActiveId(null);
+  }
 };
 
 export default BoardPage;
