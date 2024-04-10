@@ -1,3 +1,5 @@
+import { UniqueIdentifier } from "@dnd-kit/core";
+
 export interface Subtask {
   title: string;
   isCompleted: boolean;
@@ -12,7 +14,7 @@ export interface Task {
 }
 
 export interface Column {
-  id: number | string;
+  id: UniqueIdentifier;
   name: string;
   tasks: Task[];
 }

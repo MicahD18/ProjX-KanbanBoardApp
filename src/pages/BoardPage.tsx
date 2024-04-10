@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import MainNav from "../components/MainNav";
 import { useMemo, useState } from "react";
-import { Column } from "../models/board.model";
+import { Column, Task } from "../models/board.model";
 import ColumnComponent from "../components/Column";
 import AddIcon from "@mui/icons-material/Add";
 import {
@@ -15,9 +15,13 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
 import DragItem from "../components/DragItem";
 import { setColumns } from "../actions/boardActions";
+import TaskCard from "../components/TaskCard";
 
 const BoardPage = () => {
   const dispatch = useDispatch();
@@ -35,7 +39,8 @@ const BoardPage = () => {
     [selectedColumns]
   );
 
-  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+  const [itemId, setItemId] = useState<UniqueIdentifier | null>(null);
+  const [columnId, setColumnId] = useState<UniqueIdentifier | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -43,6 +48,20 @@ const BoardPage = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  const findTask = (columnId: UniqueIdentifier, taskId: UniqueIdentifier) => {
+    console.log(columnId, taskId);
+    // find the column/container that matches the id
+    const column = memoizedSelectedColumns?.find(
+      (item) => item.id === columnId
+    );
+    if (!column) return null;
+    console.log(column);
+    const task = column.tasks.find((item) => item.id === taskId);
+    if (!task) return null;
+    console.log(task);
+    return task;
+  };
 
   {
     /* if no boards selected yet */
@@ -92,29 +111,62 @@ const BoardPage = () => {
           {/* if no columns on selected board, show this */}
           {/* show content */}
           {memoizedSelectedColumns?.map((column: Column) => (
+            // container/column
             <div key={column.id} className="w-80 my-12">
+              {/* top-part of container/column */}
               <div className="flex flex-row items-center gap-2">
                 <div className="w-4 h-4 bg-blue-500 rounded-xl"></div>
                 <p>
                   {column.name.toLocaleUpperCase()} ({column.tasks.length})
                 </p>
               </div>
+
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCorners}
                 onDragStart={(event) => handleDragStart(event, column.id)}
-                onDragOver={(event) => handleDragOver(event, column.id)}
                 onDragEnd={handleDragEnd}
               >
-                <ColumnComponent id={String(column.id)} tasks={column.tasks} />
-                {column.tasks.map((task) => (
+                {/* items inside container/column */}
+                <SortableContext
+                  // id={id}
+                  items={column.tasks.map((i) => i.id)}
+                  // strategy={verticalListSortingStrategy}
+                >
+                  <div
+                    // ref={setNodeRef}
+                    className="flex flex-col gap-4 py-6 px-3 rounded-md mt-12 mb-12 bg-off_gray"
+                  >
+                    {column.tasks.map((task: Task) => (
+                      <TaskCard key={task.id} id={task.id} task={task} />
+                    ))}
+                    {/* {column.tasks.map((task: Task) => (
+                      <DragOverlay adjustScale={false} key={task.id}>
+                        {activeId && (
+                          <TaskCard
+                            id={activeId}
+                            task={findTask(column.id, task.id)}
+                          />
+                        )}
+                      </DragOverlay>
+                    ))} */}
+                  </div>
+                </SortableContext>
+              </DndContext>
+
+              <DragOverlay adjustScale={false}>
+                {itemId && (
+                  <TaskCard id={itemId} task={findTask(columnId, itemId)} />
+                )}
+              </DragOverlay>
+              {/* {column.tasks.map((task) => (
                   <DragOverlay key={task.id}>
                     {activeId ? <DragItem task={task} /> : null}
                   </DragOverlay>
-                ))}
-              </DndContext>
+                ))} */}
             </div>
           ))}
+
           <div className="mt-[120px] w-80 bg-off_gray flex flex-col items-center justify-center rounded-md">
             <button className="text-medium_gray font-semibold">
               <span className="text-lg">+</span> New Column
@@ -168,14 +220,18 @@ const BoardPage = () => {
     // }
   }
 
-  function handleDragStart(event: DragStartEvent, columnId) {
-    console.log(columnId);
-
+  function handleDragStart(event: DragStartEvent, columnId: UniqueIdentifier) {
     const { active } = event;
     const { id } = active;
-    console.log(`Picked up draggable item ${id}`);
+    // It gets the
+    console.log(columnId, id);
 
-    setActiveId(id);
+    console.log(`Picked up draggable item ${id} in column ${columnId}`);
+
+    // itemId = task id
+    setItemId(id);
+    // column id
+    setColumnId(columnId);
   }
 
   function handleDragOver(event, columnId) {
@@ -235,7 +291,7 @@ const BoardPage = () => {
       `Draggable item ${id} was dropped over droppable area ${overId}`
     );
 
-    setActiveId(null);
+    setItemId(null);
   }
 };
 
