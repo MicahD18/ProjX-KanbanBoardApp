@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MainNav from "../components/MainNav";
 import { useMemo, useState } from "react";
 import { Column } from "../models/board.model";
@@ -7,16 +7,21 @@ import AddIcon from "@mui/icons-material/Add";
 import {
   DndContext,
   DragOverlay,
+  DragStartEvent,
   KeyboardSensor,
   PointerSensor,
+  UniqueIdentifier,
   closestCorners,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import DragItem from "../components/DragItem";
+import { setColumns } from "../actions/boardActions";
 
 const BoardPage = () => {
+  const dispatch = useDispatch();
+
   // 4. Use the useSelector hook to get the state.setSelectedBoard object,
   // and use the useState hook to store the selectedBoard.data in the local state.
   const selectedColumns = useSelector(
@@ -30,7 +35,7 @@ const BoardPage = () => {
     [selectedColumns]
   );
 
-  const [activeId, setActiveId] = useState(null);
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -97,8 +102,8 @@ const BoardPage = () => {
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCorners}
-                onDragStart={handleDragStart}
-                onDragOver={handleDragOver}
+                onDragStart={(event) => handleDragStart(event, column.id)}
+                onDragOver={(event) => handleDragOver(event, column.id)}
                 onDragEnd={handleDragEnd}
               >
                 <ColumnComponent id={String(column.id)} tasks={column.tasks} />
@@ -120,16 +125,52 @@ const BoardPage = () => {
     </div>
   );
 
-  function findContainer(id: number) {
-    if (id in memoizedSelectedColumns) {
-      return id;
+  function findColumn(columnId: number, id: number) {
+    // Check if memoizedSelectedColumns is null
+    if (memoizedSelectedColumns) {
+      // iterate over each column
+      for (const column of memoizedSelectedColumns) {
+        if (column.tasks.some((task) => task.id === id)) {
+          return column.id;
+        }
+      }
+      // Find the source column
+      // const sourceColumn = memoizedSelectedColumns?.find(
+      //   (column) => column.id === columnId
+      // );
+      // console.log(sourceColumn);
+      // if (sourceColumn) {
+      //   // Check if the id matches any task in the source column
+      //   const sourceTask = sourceColumn.tasks.find((task) => task.id === id);
+      //   if (sourceTask) {
+      //     return {
+      //       sourceColumn,
+      //       sourceTask,
+      //     };
+      //   }
+      // }
     }
-    console.log(id, memoizedSelectedColumns);
 
-    // return Object.keys(items).find((key) => items[key].includes(id));
+    // Return null if no matching task is found
+    return null;
+
+    // // Iterate over selectedColumns to find the column with matching id
+    // for (const column of memoizedSelectedColumns) {
+    //   if (column.id === columnId) {
+    //     // Iterate over tasks of the column to find the task with matching id
+    //     for (const task of column.tasks) {
+    //       if (task.id === id) {
+    //         // Return the task object if found
+    //         return task;
+    //       }
+    //     }
+    //   }
+    // }
   }
 
-  function handleDragStart(event) {
+  function handleDragStart(event: DragStartEvent, columnId) {
+    console.log(columnId);
+
     const { active } = event;
     const { id } = active;
     console.log(`Picked up draggable item ${id}`);
@@ -137,20 +178,52 @@ const BoardPage = () => {
     setActiveId(id);
   }
 
-  function handleDragOver(event) {
-    const { active, over, draggingRect } = event;
-    const { id } = active;
-    const { id: overId } = over;
+  function handleDragOver(event, columnId) {
+    console.log(columnId);
 
-    // if (over) {
-    //   console.log(active, over, draggingRect);
-    // } else {
-    //   console.log("No drop target.");
-    // }
+    // PROBLEM: So the problem is that the destinationId is
+    // the id for a row. For example, if I move item 1 in column 1
+    // to the item 3 place in column 2, the destinationId would be 3.
+    // I want the destinationId to be 2 so item 1 can be dropped into column 2.
+    const { active, over, draggingRect } = event;
+    const { id: taskId } = active;
+    const { id: destinationId } = over;
+
+    // taskId = 1 (task selected); destinationId = 2 (row 2, on the same column)
+    console.log(taskId, destinationId);
 
     // Find the containers
-    const activeContainer = findContainer(id);
-    const overContainer = findContainer(overId);
+    const sourceColumn = findColumn(columnId, taskId); // active
+    const destinationColumn = findColumn(columnId, destinationId); // over
+    console.log(sourceColumn, destinationColumn);
+
+    if (sourceColumn === destinationColumn) {
+      // Same column; handle the move within the same column
+      // Update the state accordingly
+      console.log("same column");
+      const updatedColumns = memoizedSelectedColumns?.map((column) => {
+        if (column.id === columnId) {
+          const newTasks = [...column.tasks];
+          const taskIndex = newTasks.findIndex((task) => task.id === taskId);
+          const [draggedTask] = newTasks.splice(taskIndex, 1);
+          const dropIndex = newTasks.findIndex(
+            (task) => task.id === destinationId
+          );
+          newTasks.splice(dropIndex, 0, draggedTask);
+          return { ...column, tasks: newTasks };
+        }
+        return column;
+      });
+
+      // Update the state with the new column order
+      // This assumes that you have a Redux action to update the columns
+      // You should dispatch this action to update the state
+      console.log("Updated columns within the same column", updatedColumns);
+    } else {
+      // Different column; handle the move between columns
+      // Update the state accordingly
+      console.log("different column");
+    }
   }
 
   function handleDragEnd(event) {
