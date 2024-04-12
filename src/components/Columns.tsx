@@ -1,32 +1,47 @@
 import { SortableContext } from "@dnd-kit/sortable";
 import { Column, Task } from "../models/board.model";
 import TaskCard from "./TaskCard";
-import { useDispatch, useSelector } from "react-redux";
-import TaskModal from "./modals/TaskModal";
-import { openModal } from "../reducers/modalReducer";
 import { useState } from "react";
+import Dialog from "./Dialog";
+import ViewTaskModal from "./modals/ViewTaskModal";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedTask, updateTask } from "../slices/boardSlice";
+import { RootState } from "../store";
 
 interface Props {
   columns: Column[] | null;
 }
 
 const Columns: React.FC<Props> = ({ columns }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const dispatch = useDispatch();
-  const isModalOpen = useSelector(
-    (state: { modalReducer: { isOpen: boolean } }) => state.modalReducer.isOpen
+  const selectedTask = useSelector(
+    (state: RootState) => state.board.selectedTask
   );
 
-  const [selectedTask, setSelectedTask] = useState<any>();
+  const handleTaskUpdate = (updatedTask: Task) => {
+    dispatch(updateTask(updatedTask));
+  };
 
   const handleOpenModal = (task: Task) => {
-    setSelectedTask(task);
-    console.log(selectedTask);
-    dispatch(openModal());
+    dispatch(setSelectedTask(task));
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedTask(null);
   };
 
   return (
     <>
-      {isModalOpen && <TaskModal />}
+      {/* VIEW TASK DIALOG */}
+      <Dialog isOpen={isModalOpen} onClose={closeModal}>
+        {selectedTask && (
+          <ViewTaskModal task={selectedTask} onTaskUpdate={handleTaskUpdate} />
+        )}
+      </Dialog>
       {columns?.map((column: Column) => (
         // container/column
         <div key={column.id} className="w-80 my-12">
