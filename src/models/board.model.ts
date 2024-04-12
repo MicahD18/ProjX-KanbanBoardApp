@@ -6,7 +6,7 @@ export interface Subtask {
 }
 
 export interface Task {
-  id: number;
+  id: UniqueIdentifier;
   title: string;
   description: string;
   status: string;
@@ -20,7 +20,7 @@ export interface Column {
 }
 
 export interface Board {
-  id: number;
+  id: UniqueIdentifier;
   name: string;
   columns: Column[];
 }

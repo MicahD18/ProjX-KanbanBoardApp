@@ -1,11 +1,12 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import MainNav from "../components/MainNav";
 import { useMemo, useState } from "react";
 import { Column, Task } from "../models/board.model";
-import ColumnComponent from "../components/Column";
 import AddIcon from "@mui/icons-material/Add";
 import {
   DndContext,
+  DragEndEvent,
+  DragMoveEvent,
   DragOverlay,
   DragStartEvent,
   KeyboardSensor,
@@ -17,15 +18,12 @@ import {
 } from "@dnd-kit/core";
 import {
   SortableContext,
+  arrayMove,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import DragItem from "../components/DragItem";
-import { setColumns } from "../actions/boardActions";
 import TaskCard from "../components/TaskCard";
 
 const BoardPage = () => {
-  const dispatch = useDispatch();
-
   // 4. Use the useSelector hook to get the state.setSelectedBoard object,
   // and use the useState hook to store the selectedBoard.data in the local state.
   const selectedColumns = useSelector(
@@ -39,8 +37,7 @@ const BoardPage = () => {
     [selectedColumns]
   );
 
-  const [itemId, setItemId] = useState<UniqueIdentifier | null>(null);
-  const [columnId, setColumnId] = useState<UniqueIdentifier | null>(null);
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -49,18 +46,255 @@ const BoardPage = () => {
     })
   );
 
-  const findTask = (columnId: UniqueIdentifier, taskId: UniqueIdentifier) => {
-    console.log(columnId, taskId);
+  const handleDragStart = (event: DragStartEvent) => {
+    const { active } = event;
+    const { id } = active;
+    console.log(`Picked up draggable item ${id}`);
+
+    // activeId = task id
+    setActiveId(id);
+  };
+
+  const findTask = (id: UniqueIdentifier | null) => {
     // find the column/container that matches the id
-    const column = memoizedSelectedColumns?.find(
-      (item) => item.id === columnId
-    );
-    if (!column) return null;
-    console.log(column);
-    const task = column.tasks.find((item) => item.id === taskId);
+    const container = findValueOfItems(id, "item");
+    if (!container) return null;
+    const task = container.tasks.find((item) => item.id === id);
     if (!task) return null;
-    console.log(task);
     return task;
+  };
+
+  const handleDragMove = (event: DragMoveEvent) => {
+    const { active, over } = event;
+
+    // Handle Item Sorting
+    if (
+      active.id.toString().includes("item") &&
+      over?.id.toString().includes("item") &&
+      active &&
+      over &&
+      active.id !== over.id
+    ) {
+      // Find the active container and over container (tasks)
+      const activeContainer = findValueOfItems(active.id, "item");
+      const overContainer = findValueOfItems(over.id, "item");
+
+      // If the active or over container is not found, return
+      if (!activeContainer || !overContainer) return;
+
+      // Find the index of the active and over container (column)
+      const activeColumnIndex = memoizedSelectedColumns!.findIndex(
+        (column) => column.id === activeContainer.id
+      );
+      const overColumnIndex = memoizedSelectedColumns!.findIndex(
+        (column) => column.id === overContainer.id
+      );
+
+      // Find the index of the active and over item
+      const activeItemIndex = activeContainer.tasks.findIndex(
+        (item) => item.id === active.id
+      );
+      const overItemIndex = activeContainer.tasks.findIndex(
+        (item) => item.id === over.id
+      );
+
+      // In the same container
+      if (activeColumnIndex === overColumnIndex) {
+        const newItems = [...memoizedSelectedColumns!];
+        // if both indexes are the same, move the active item to the position of the over item
+        newItems[activeColumnIndex].tasks = arrayMove(
+          newItems[activeColumnIndex].tasks,
+          activeItemIndex,
+          overItemIndex
+        );
+      } else {
+        // In different containers
+        const newItems = [...memoizedSelectedColumns!];
+        const [removedItem] = newItems[activeColumnIndex].tasks.splice(
+          activeItemIndex,
+          1
+        );
+        newItems[overColumnIndex].tasks.splice(overItemIndex, 0, removedItem);
+      }
+    }
+
+    // Handling Item Drop Into a Container
+    if (
+      active.id.toString().includes("item") &&
+      over?.id.toString().includes("container") &&
+      active &&
+      over &&
+      active.id !== over.id
+    ) {
+      // Find the active and over container
+      const activeContainer = findValueOfItems(active.id, "item");
+      const overContainer = findValueOfItems(over.id, "container");
+
+      // If the active or over container is not found, return
+      if (!activeContainer || !overContainer) return;
+
+      // Create a copy of the columns
+      const newColumns = memoizedSelectedColumns
+        ? memoizedSelectedColumns.map((column) => ({ ...column }))
+        : [];
+
+      // Find the index of the active and over container
+      const activeContainerIndex = newColumns.findIndex(
+        (container) => container.id === activeContainer.id
+      );
+      const overContainerIndex = newColumns.findIndex(
+        (container) => container.id === overContainer.id
+      );
+
+      // Find the index of the active and over item
+      const activeItemIndex = activeContainer.tasks.findIndex(
+        (item) => item.id === active.id
+      );
+      // Remove the active item from the active container and add it to the over container
+      const newItems = [...memoizedSelectedColumns!];
+      const [removeditem] = newItems[activeContainerIndex!].tasks.splice(
+        activeItemIndex,
+        1
+      );
+      newItems[overContainerIndex!].tasks.push(removeditem);
+    }
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    // Handling Item Sorting
+    if (
+      active.id.toString().includes("item") &&
+      over?.id.toString().includes("item") &&
+      active &&
+      over &&
+      active.id !== over.id
+    ) {
+      // Find the active and over container
+      const activeContainer = findValueOfItems(active.id, "item");
+      const overContainer = findValueOfItems(over.id, "item");
+
+      // If the active or over container is not found, return
+      if (!activeContainer || !overContainer) return;
+
+      // Create a copy of the columns
+      const newColumns = memoizedSelectedColumns
+        ? memoizedSelectedColumns.map((column) => ({ ...column }))
+        : [];
+
+      // Find the active and over column indices
+      const activeColumnIndex = newColumns.findIndex(
+        (column) => column.id === activeContainer.id
+      );
+      const overColumnIndex = newColumns.findIndex(
+        (column) => column.id === overContainer.id
+      );
+
+      // Find the index of the active and over item
+      const activeItemIndex = activeContainer.tasks.findIndex(
+        (item) => item.id === active.id
+      );
+      const overItemIndex = activeContainer.tasks.findIndex(
+        (item) => item.id === over.id
+      );
+
+      // If the active and over columns are the same
+      if (activeColumnIndex === overColumnIndex) {
+        // Move the active item to the new position within the same column
+        const newTasks = [...newColumns[activeColumnIndex!].tasks];
+        const [removedItem] = newTasks.splice(activeItemIndex, 1);
+        newTasks.splice(overItemIndex, 0, removedItem);
+
+        newColumns[activeColumnIndex!] = {
+          ...newColumns![activeColumnIndex!],
+          tasks: newTasks,
+        };
+      } else {
+        // Move the active item from the active column to the over column
+        const newActiveTasks = [...newColumns[activeColumnIndex!].tasks];
+        const [removedItem] = newActiveTasks.splice(activeItemIndex, 1);
+
+        const newOverTasks = [...newColumns[overColumnIndex!].tasks];
+        newOverTasks.splice(overItemIndex, 0, removedItem);
+
+        newColumns[activeColumnIndex!] = {
+          ...newColumns[activeColumnIndex!],
+          tasks: newActiveTasks,
+        };
+        newColumns[overColumnIndex!] = {
+          ...newColumns[overColumnIndex!],
+          tasks: newOverTasks,
+        };
+      }
+    }
+
+    // Handling item dropping into Container
+    if (
+      active.id.toString().includes("item") &&
+      over?.id.toString().includes("container") &&
+      active &&
+      over &&
+      active.id !== over.id
+    ) {
+      // Find the active and over container
+      const activeContainer = findValueOfItems(active.id, "item");
+      const overContainer = findValueOfItems(over.id, "container");
+
+      // If the active or over container is not found, return
+      if (!activeContainer || !overContainer) return;
+
+      // Create a copy of the columns
+      const newColumns = memoizedSelectedColumns
+        ? memoizedSelectedColumns.map((column) => ({ ...column }))
+        : [];
+
+      // Find the active and over column indices
+      const activeColumnIndex = newColumns.findIndex(
+        (column) => column.id === activeContainer.id
+      );
+      const overColumnIndex = newColumns.findIndex(
+        (column) => column.id === overContainer.id
+      );
+
+      // Find the index of the active and over item
+      const activeItemIndex = activeContainer.tasks.findIndex(
+        (item) => item.id === active.id
+      );
+
+      // Move the active item from the active column to the over column
+      const newActiveTasks = [...newColumns[activeColumnIndex!].tasks];
+      const [removedItem] = newActiveTasks.splice(activeItemIndex, 1);
+
+      const newOverTasks = [...newColumns[overColumnIndex!].tasks];
+      newOverTasks.push(removedItem);
+
+      newColumns[activeColumnIndex!] = {
+        ...newColumns[activeColumnIndex!],
+        tasks: newActiveTasks,
+      };
+      newColumns[overColumnIndex!] = {
+        ...newColumns[overColumnIndex!],
+        tasks: newOverTasks,
+      };
+    }
+    console.log(
+      `Draggable item ${active.id} was dropped over droppable area ${over?.id}`
+    );
+
+    // Clear the activeId state
+    setActiveId(null);
+  };
+
+  const findValueOfItems = (id: UniqueIdentifier | null, type: string) => {
+    if (type === "container") {
+      return memoizedSelectedColumns?.find((column) => column.id === id);
+    }
+    if (type === "item") {
+      return memoizedSelectedColumns?.find((column) =>
+        column.tasks.find((item) => item.id === id)
+      );
+    }
   };
 
   {
@@ -107,192 +341,67 @@ const BoardPage = () => {
             memoizedSelectedColumns?.length === 0 ? "w-full" : ""
           }`}
         >
-          {/* if no columns, show nothing */}
-          {/* if no columns on selected board, show this */}
-          {/* show content */}
-          {memoizedSelectedColumns?.map((column: Column) => (
-            // container/column
-            <div key={column.id} className="w-80 my-12">
-              {/* top-part of container/column */}
-              <div className="flex flex-row items-center gap-2">
-                <div className="w-4 h-4 bg-blue-500 rounded-xl"></div>
-                <p>
-                  {column.name.toLocaleUpperCase()} ({column.tasks.length})
-                </p>
-              </div>
-
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCorners}
-                onDragStart={(event) => handleDragStart(event, column.id)}
-                onDragEnd={handleDragEnd}
-              >
-                {/* items inside container/column */}
-                <SortableContext
-                  // id={id}
-                  items={column.tasks.map((i) => i.id)}
-                  // strategy={verticalListSortingStrategy}
-                >
-                  <div
-                    // ref={setNodeRef}
-                    className="flex flex-col gap-4 py-6 px-3 rounded-md mt-12 mb-12 bg-off_gray"
-                  >
-                    {column.tasks.map((task: Task) => (
-                      <TaskCard key={task.id} id={task.id} task={task} />
-                    ))}
-                    {/* {column.tasks.map((task: Task) => (
-                      <DragOverlay adjustScale={false} key={task.id}>
-                        {activeId && (
-                          <TaskCard
-                            id={activeId}
-                            task={findTask(column.id, task.id)}
-                          />
-                        )}
-                      </DragOverlay>
-                    ))} */}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCorners}
+            onDragStart={handleDragStart}
+            onDragMove={handleDragMove}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={
+                memoizedSelectedColumns
+                  ? memoizedSelectedColumns.map((column) => ({ ...column }))
+                  : []
+              }
+            >
+              {memoizedSelectedColumns?.map((column: Column) => (
+                // container/column
+                <div key={column.id} className="w-80 my-12">
+                  {/* top-part of container/column */}
+                  <div className="flex flex-row items-center gap-2">
+                    <div className="w-4 h-4 bg-blue-500 rounded-xl"></div>
+                    <p>
+                      {column.name.toLocaleUpperCase()} ({column.tasks.length})
+                    </p>
                   </div>
-                </SortableContext>
-              </DndContext>
 
+                  {/* items inside container/column */}
+                  <SortableContext
+                    // id={id}
+                    items={column.tasks.map((i) => i.id)}
+                    // strategy={verticalListSortingStrategy}
+                  >
+                    <div
+                      // ref={setNodeRef}
+                      className="flex flex-col gap-4 py-6 px-3 rounded-md my-12 bg-off_gray"
+                    >
+                      {column.tasks.map((task: Task) => (
+                        <TaskCard key={task.id} id={task.id} task={task} />
+                      ))}
+                      <button className="text-medium_gray font-semibold hover:bg-gray-300 py-2 transition duration-300 rounded-md">
+                        <span className="text-lg">+</span> New Task
+                      </button>
+                    </div>
+                  </SortableContext>
+                </div>
+              ))}
               <DragOverlay adjustScale={false}>
-                {itemId && (
-                  <TaskCard id={itemId} task={findTask(columnId, itemId)} />
+                {activeId && (
+                  <TaskCard id={activeId} task={findTask(activeId)} />
                 )}
               </DragOverlay>
-              {/* {column.tasks.map((task) => (
-                  <DragOverlay key={task.id}>
-                    {activeId ? <DragItem task={task} /> : null}
-                  </DragOverlay>
-                ))} */}
-            </div>
-          ))}
-
-          <div className="mt-[120px] w-80 bg-off_gray flex flex-col items-center justify-center rounded-md">
+            </SortableContext>
+          </DndContext>
+          {/* <div className="mt-[120px] w-80 bg-off_gray flex flex-col items-center justify-center rounded-md">
             <button className="text-medium_gray font-semibold">
               <span className="text-lg">+</span> New Column
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
   );
-
-  function findColumn(columnId: number, id: number) {
-    // Check if memoizedSelectedColumns is null
-    if (memoizedSelectedColumns) {
-      // iterate over each column
-      for (const column of memoizedSelectedColumns) {
-        if (column.tasks.some((task) => task.id === id)) {
-          return column.id;
-        }
-      }
-      // Find the source column
-      // const sourceColumn = memoizedSelectedColumns?.find(
-      //   (column) => column.id === columnId
-      // );
-      // console.log(sourceColumn);
-      // if (sourceColumn) {
-      //   // Check if the id matches any task in the source column
-      //   const sourceTask = sourceColumn.tasks.find((task) => task.id === id);
-      //   if (sourceTask) {
-      //     return {
-      //       sourceColumn,
-      //       sourceTask,
-      //     };
-      //   }
-      // }
-    }
-
-    // Return null if no matching task is found
-    return null;
-
-    // // Iterate over selectedColumns to find the column with matching id
-    // for (const column of memoizedSelectedColumns) {
-    //   if (column.id === columnId) {
-    //     // Iterate over tasks of the column to find the task with matching id
-    //     for (const task of column.tasks) {
-    //       if (task.id === id) {
-    //         // Return the task object if found
-    //         return task;
-    //       }
-    //     }
-    //   }
-    // }
-  }
-
-  function handleDragStart(event: DragStartEvent, columnId: UniqueIdentifier) {
-    const { active } = event;
-    const { id } = active;
-    // It gets the
-    console.log(columnId, id);
-
-    console.log(`Picked up draggable item ${id} in column ${columnId}`);
-
-    // itemId = task id
-    setItemId(id);
-    // column id
-    setColumnId(columnId);
-  }
-
-  function handleDragOver(event, columnId) {
-    console.log(columnId);
-
-    // PROBLEM: So the problem is that the destinationId is
-    // the id for a row. For example, if I move item 1 in column 1
-    // to the item 3 place in column 2, the destinationId would be 3.
-    // I want the destinationId to be 2 so item 1 can be dropped into column 2.
-    const { active, over, draggingRect } = event;
-    const { id: taskId } = active;
-    const { id: destinationId } = over;
-
-    // taskId = 1 (task selected); destinationId = 2 (row 2, on the same column)
-    console.log(taskId, destinationId);
-
-    // Find the containers
-    const sourceColumn = findColumn(columnId, taskId); // active
-    const destinationColumn = findColumn(columnId, destinationId); // over
-    console.log(sourceColumn, destinationColumn);
-
-    if (sourceColumn === destinationColumn) {
-      // Same column; handle the move within the same column
-      // Update the state accordingly
-      console.log("same column");
-      const updatedColumns = memoizedSelectedColumns?.map((column) => {
-        if (column.id === columnId) {
-          const newTasks = [...column.tasks];
-          const taskIndex = newTasks.findIndex((task) => task.id === taskId);
-          const [draggedTask] = newTasks.splice(taskIndex, 1);
-          const dropIndex = newTasks.findIndex(
-            (task) => task.id === destinationId
-          );
-          newTasks.splice(dropIndex, 0, draggedTask);
-          return { ...column, tasks: newTasks };
-        }
-        return column;
-      });
-
-      // Update the state with the new column order
-      // This assumes that you have a Redux action to update the columns
-      // You should dispatch this action to update the state
-      console.log("Updated columns within the same column", updatedColumns);
-    } else {
-      // Different column; handle the move between columns
-      // Update the state accordingly
-      console.log("different column");
-    }
-  }
-
-  function handleDragEnd(event) {
-    const { active, over } = event;
-    const { id } = active;
-    const { id: overId } = over;
-    console.log(active, over);
-    console.log(
-      `Draggable item ${id} was dropped over droppable area ${overId}`
-    );
-
-    setItemId(null);
-  }
 };
 
 export default BoardPage;

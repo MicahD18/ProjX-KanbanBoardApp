@@ -28,7 +28,7 @@ const Header = () => {
       <div className="flex flex-row items-center gap-4">
         <button className="btn bg-primary_btn_idle border-none plus-jakarta text-white hover:bg-primary_btn_hover">
           <AddIcon />
-          Add New Task
+          Add Container
         </button>
         <button className="btn bg-transparent border-none text-medium_gray hover:text-white hover:bg-primary_btn_hover">
           <MoreVertIcon />
