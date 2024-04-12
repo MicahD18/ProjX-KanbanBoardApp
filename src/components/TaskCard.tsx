@@ -6,9 +6,10 @@ import { CSS } from "@dnd-kit/utilities";
 interface Props {
   id: UniqueIdentifier;
   task: Task | null;
+  handleOpenModal?: (task: Task) => void;
 }
 
-const TaskCard: React.FC<Props> = ({ id, task }) => {
+const TaskCard: React.FC<Props> = ({ id, task, handleOpenModal }) => {
   const {
     attributes,
     listeners,
@@ -17,6 +18,12 @@ const TaskCard: React.FC<Props> = ({ id, task }) => {
     transition,
     isDragging,
   } = useSortable({ id: id });
+
+  const handleClick = () => {
+    if (task && handleOpenModal) {
+      handleOpenModal(task);
+    }
+  };
 
   return (
     <div
@@ -31,7 +38,9 @@ const TaskCard: React.FC<Props> = ({ id, task }) => {
       }}
     >
       <div className="card-body">
-        <p className="card-title text-black text-sm">{task?.title}</p>
+        <p className="card-title text-black text-sm" onClick={handleClick}>
+          {task?.title}
+        </p>
         <p>{task?.subtasks.length} subtasks</p>
       </div>
       <button {...listeners}>Drag</button>

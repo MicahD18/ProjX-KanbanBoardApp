@@ -22,6 +22,7 @@ import {
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import TaskCard from "../components/TaskCard";
+import Columns from "../components/Columns";
 
 const BoardPage = () => {
   // 4. Use the useSelector hook to get the state.setSelectedBoard object,
@@ -49,7 +50,6 @@ const BoardPage = () => {
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
     const { id } = active;
-    console.log(`Picked up draggable item ${id}`);
 
     // activeId = task id
     setActiveId(id);
@@ -278,9 +278,6 @@ const BoardPage = () => {
         tasks: newOverTasks,
       };
     }
-    console.log(
-      `Draggable item ${active.id} was dropped over droppable area ${over?.id}`
-    );
 
     // Clear the activeId state
     setActiveId(null);
@@ -355,37 +352,7 @@ const BoardPage = () => {
                   : []
               }
             >
-              {memoizedSelectedColumns?.map((column: Column) => (
-                // container/column
-                <div key={column.id} className="w-80 my-12">
-                  {/* top-part of container/column */}
-                  <div className="flex flex-row items-center gap-2">
-                    <div className="w-4 h-4 bg-blue-500 rounded-xl"></div>
-                    <p>
-                      {column.name.toLocaleUpperCase()} ({column.tasks.length})
-                    </p>
-                  </div>
-
-                  {/* items inside container/column */}
-                  <SortableContext
-                    // id={id}
-                    items={column.tasks.map((i) => i.id)}
-                    // strategy={verticalListSortingStrategy}
-                  >
-                    <div
-                      // ref={setNodeRef}
-                      className="flex flex-col gap-4 py-6 px-3 rounded-md my-12 bg-off_gray"
-                    >
-                      {column.tasks.map((task: Task) => (
-                        <TaskCard key={task.id} id={task.id} task={task} />
-                      ))}
-                      <button className="text-medium_gray font-semibold hover:bg-gray-300 py-2 transition duration-300 rounded-md">
-                        <span className="text-lg">+</span> New Task
-                      </button>
-                    </div>
-                  </SortableContext>
-                </div>
-              ))}
+              <Columns columns={memoizedSelectedColumns} />
               <DragOverlay adjustScale={false}>
                 {activeId && (
                   <TaskCard id={activeId} task={findTask(activeId)} />
