@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import MainNav from "../components/MainNav";
 import { useMemo, useState } from "react";
-import { Column, Task } from "../models/board.model";
 import AddIcon from "@mui/icons-material/Add";
 import {
   DndContext,
@@ -23,13 +22,13 @@ import {
 } from "@dnd-kit/sortable";
 import TaskCard from "../components/TaskCard";
 import Columns from "../components/Columns";
+import { RootState } from "../store";
 
 const BoardPage = () => {
   // 4. Use the useSelector hook to get the state.setSelectedBoard object,
   // and use the useState hook to store the selectedBoard.data in the local state.
   const selectedColumns = useSelector(
-    (state: { boardReducer: { columns: Column[] | null } }) =>
-      state.boardReducer?.columns
+    (state: RootState) => state.board.columns
   );
   // 6. Optimize the component by memoizing the selectedBoard value to avoid
   // unnecessary re-renders.

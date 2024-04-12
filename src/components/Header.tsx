@@ -3,11 +3,12 @@ import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
+import { RootState } from "../store";
 
 const Header = () => {
-  const selectedName = useSelector(
-    (state: { boardReducer: { name: string | null } }) =>
-      state.boardReducer?.name
+  const selectedName = useSelector((state: RootState) => state.board.name);
+  const selectedColumns = useSelector(
+    (state: RootState) => state.board.columns
   );
   const memoizedSelectedName = useMemo(() => selectedName, [selectedName]);
 
@@ -25,15 +26,17 @@ const Header = () => {
           {memoizedSelectedName}
         </p>
       </div>
-      <div className="flex flex-row items-center gap-4">
-        <button className="btn bg-primary_btn_idle border-none plus-jakarta text-white hover:bg-primary_btn_hover">
-          <AddIcon />
-          Add Container
-        </button>
-        <button className="btn bg-transparent border-none text-medium_gray hover:text-white hover:bg-primary_btn_hover">
-          <MoreVertIcon />
-        </button>
-      </div>
+      {selectedColumns.length > 0 && (
+        <div className="flex flex-row items-center gap-4">
+          <button className="btn bg-primary_btn_idle border-none plus-jakarta text-white hover:bg-primary_btn_hover">
+            <AddIcon />
+            Add New Column
+          </button>
+          <button className="btn bg-transparent border-none text-medium_gray hover:text-white hover:bg-primary_btn_hover">
+            <MoreVertIcon />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

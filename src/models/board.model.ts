@@ -1,6 +1,7 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
 
 export interface Subtask {
+  id: UniqueIdentifier;
   title: string;
   isCompleted: boolean;
 }
