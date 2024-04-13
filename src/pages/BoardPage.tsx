@@ -23,12 +23,21 @@ import {
 import TaskCard from "../components/TaskCard";
 import Columns from "../components/Columns";
 import { RootState } from "../store";
+import { Column } from "../models/board.model";
 
 const BoardPage = () => {
+  // TODO: NOTE: Changes in state for subtasks don't work when using the boardReducer, however it DOES work when using boardSlice.
+  // TODO: NOTE: When using boardSlice, the app crashes when using the drag and drop feature, however it DOES work when using boardReducer. (Fix this later)
   // 4. Use the useSelector hook to get the state.setSelectedBoard object,
   // and use the useState hook to store the selectedBoard.data in the local state.
+  // NEW:
+  // const selectedColumns = useSelector(
+  //   (state: RootState) => state.board.columns
+  // );
+  // OLD:
   const selectedColumns = useSelector(
-    (state: RootState) => state.board.columns
+    (state: { boardReducer: { columns: Column[] | null } }) =>
+      state.boardReducer?.columns
   );
   // 6. Optimize the component by memoizing the selectedBoard value to avoid
   // unnecessary re-renders.
@@ -74,6 +83,11 @@ const BoardPage = () => {
       over &&
       active.id !== over.id
     ) {
+      // Create a copy of the columns
+      const newColumns = memoizedSelectedColumns
+        ? memoizedSelectedColumns.map((column) => ({ ...column }))
+        : [];
+
       // Find the active container and over container (tasks)
       const activeContainer = findValueOfItems(active.id, "item");
       const overContainer = findValueOfItems(over.id, "item");
@@ -82,10 +96,10 @@ const BoardPage = () => {
       if (!activeContainer || !overContainer) return;
 
       // Find the index of the active and over container (column)
-      const activeColumnIndex = memoizedSelectedColumns!.findIndex(
+      const activeColumnIndex = newColumns.findIndex(
         (column) => column.id === activeContainer.id
       );
-      const overColumnIndex = memoizedSelectedColumns!.findIndex(
+      const overColumnIndex = newColumns.findIndex(
         (column) => column.id === overContainer.id
       );
 
@@ -125,17 +139,17 @@ const BoardPage = () => {
       over &&
       active.id !== over.id
     ) {
+      // Create a copy of the columns
+      const newColumns = memoizedSelectedColumns
+        ? memoizedSelectedColumns.map((column) => ({ ...column }))
+        : [];
+
       // Find the active and over container
       const activeContainer = findValueOfItems(active.id, "item");
       const overContainer = findValueOfItems(over.id, "container");
 
       // If the active or over container is not found, return
       if (!activeContainer || !overContainer) return;
-
-      // Create a copy of the columns
-      const newColumns = memoizedSelectedColumns
-        ? memoizedSelectedColumns.map((column) => ({ ...column }))
-        : [];
 
       // Find the index of the active and over container
       const activeContainerIndex = newColumns.findIndex(
@@ -170,17 +184,17 @@ const BoardPage = () => {
       over &&
       active.id !== over.id
     ) {
+      // Create a copy of the columns
+      const newColumns = memoizedSelectedColumns
+        ? memoizedSelectedColumns.map((column) => ({ ...column }))
+        : [];
+
       // Find the active and over container
       const activeContainer = findValueOfItems(active.id, "item");
       const overContainer = findValueOfItems(over.id, "item");
 
       // If the active or over container is not found, return
       if (!activeContainer || !overContainer) return;
-
-      // Create a copy of the columns
-      const newColumns = memoizedSelectedColumns
-        ? memoizedSelectedColumns.map((column) => ({ ...column }))
-        : [];
 
       // Find the active and over column indices
       const activeColumnIndex = newColumns.findIndex(
@@ -201,30 +215,42 @@ const BoardPage = () => {
       // If the active and over columns are the same
       if (activeColumnIndex === overColumnIndex) {
         // Move the active item to the new position within the same column
-        const newTasks = [...newColumns[activeColumnIndex!].tasks];
-        const [removedItem] = newTasks.splice(activeItemIndex, 1);
-        newTasks.splice(overItemIndex, 0, removedItem);
+        // const newTasks = [...newColumns[activeColumnIndex!].tasks];
+        // const [removedItem] = newTasks.splice(activeItemIndex, 1);
+        // newTasks.splice(overItemIndex, 0, removedItem);
 
-        newColumns[activeColumnIndex!] = {
-          ...newColumns![activeColumnIndex!],
-          tasks: newTasks,
-        };
+        // newColumns[activeColumnIndex!] = {
+        //   ...newColumns![activeColumnIndex!],
+        //   tasks: newTasks,
+        // };
+        // NEW:
+        newColumns[activeColumnIndex].tasks = arrayMove(
+          newColumns[activeColumnIndex].tasks,
+          activeItemIndex,
+          overItemIndex
+        );
       } else {
         // Move the active item from the active column to the over column
-        const newActiveTasks = [...newColumns[activeColumnIndex!].tasks];
-        const [removedItem] = newActiveTasks.splice(activeItemIndex, 1);
+        // const newActiveTasks = [...newColumns[activeColumnIndex!].tasks];
+        // const [removedItem] = newActiveTasks.splice(activeItemIndex, 1);
 
-        const newOverTasks = [...newColumns[overColumnIndex!].tasks];
-        newOverTasks.splice(overItemIndex, 0, removedItem);
+        // const newOverTasks = [...newColumns[overColumnIndex!].tasks];
+        // newOverTasks.splice(overItemIndex, 0, removedItem);
 
-        newColumns[activeColumnIndex!] = {
-          ...newColumns[activeColumnIndex!],
-          tasks: newActiveTasks,
-        };
-        newColumns[overColumnIndex!] = {
-          ...newColumns[overColumnIndex!],
-          tasks: newOverTasks,
-        };
+        // newColumns[activeColumnIndex!] = {
+        //   ...newColumns[activeColumnIndex!],
+        //   tasks: newActiveTasks,
+        // };
+        // newColumns[overColumnIndex!] = {
+        //   ...newColumns[overColumnIndex!],
+        //   tasks: newOverTasks,
+        // };
+        // NEW:
+        const [removedItem] = newColumns[activeColumnIndex].tasks.splice(
+          activeItemIndex,
+          1
+        );
+        newColumns[overColumnIndex].tasks.splice(overItemIndex, 0, removedItem);
       }
     }
 
@@ -236,17 +262,17 @@ const BoardPage = () => {
       over &&
       active.id !== over.id
     ) {
+      // Create a copy of the columns
+      const newColumns = memoizedSelectedColumns
+        ? memoizedSelectedColumns.map((column) => ({ ...column }))
+        : [];
+
       // Find the active and over container
       const activeContainer = findValueOfItems(active.id, "item");
       const overContainer = findValueOfItems(over.id, "container");
 
       // If the active or over container is not found, return
       if (!activeContainer || !overContainer) return;
-
-      // Create a copy of the columns
-      const newColumns = memoizedSelectedColumns
-        ? memoizedSelectedColumns.map((column) => ({ ...column }))
-        : [];
 
       // Find the active and over column indices
       const activeColumnIndex = newColumns.findIndex(
@@ -262,20 +288,26 @@ const BoardPage = () => {
       );
 
       // Move the active item from the active column to the over column
-      const newActiveTasks = [...newColumns[activeColumnIndex!].tasks];
-      const [removedItem] = newActiveTasks.splice(activeItemIndex, 1);
+      // const newActiveTasks = [...newColumns[activeColumnIndex!].tasks];
+      // const [removedItem] = newActiveTasks.splice(activeItemIndex, 1);
 
-      const newOverTasks = [...newColumns[overColumnIndex!].tasks];
-      newOverTasks.push(removedItem);
+      // const newOverTasks = [...newColumns[overColumnIndex!].tasks];
+      // newOverTasks.push(removedItem);
 
-      newColumns[activeColumnIndex!] = {
-        ...newColumns[activeColumnIndex!],
-        tasks: newActiveTasks,
-      };
-      newColumns[overColumnIndex!] = {
-        ...newColumns[overColumnIndex!],
-        tasks: newOverTasks,
-      };
+      // newColumns[activeColumnIndex!] = {
+      //   ...newColumns[activeColumnIndex!],
+      //   tasks: newActiveTasks,
+      // };
+      // newColumns[overColumnIndex!] = {
+      //   ...newColumns[overColumnIndex!],
+      //   tasks: newOverTasks,
+      // };
+      // NEW:
+      const [removedItem] = newColumns[activeColumnIndex].tasks.splice(
+        activeItemIndex,
+        1
+      );
+      newColumns[overColumnIndex].tasks.push(removedItem);
     }
 
     // Clear the activeId state
