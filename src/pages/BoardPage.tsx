@@ -22,7 +22,7 @@ import {
 } from "@dnd-kit/sortable";
 import TaskCard from "../components/TaskCard";
 import Columns from "../components/Columns";
-import { RootState } from "../store";
+// import { RootState } from "../store";
 import { Column } from "../models/board.model";
 
 const BoardPage = () => {
