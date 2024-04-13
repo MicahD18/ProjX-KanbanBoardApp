@@ -8,7 +8,8 @@ import { boards } from "../data/data.json";
 // models
 import { Board, Column } from "../models/board.model";
 import { useDispatch } from "react-redux";
-import { setName, setColumns } from "../slices/boardSlice";
+import { setColumns } from "../actions/boardActions";
+import { setName } from "../slices/boardSlice";
 
 const Sidebar = () => {
   const dispatch = useDispatch();

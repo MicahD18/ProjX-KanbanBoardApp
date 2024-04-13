@@ -23,12 +23,19 @@ import {
 import TaskCard from "../components/TaskCard";
 import Columns from "../components/Columns";
 import { RootState } from "../store";
+import { Column } from "../models/board.model";
 
 const BoardPage = () => {
   // 4. Use the useSelector hook to get the state.setSelectedBoard object,
   // and use the useState hook to store the selectedBoard.data in the local state.
+  // NEW:
+  // const selectedColumns = useSelector(
+  //   (state: RootState) => state.board.columns
+  // );
+  // OLD:
   const selectedColumns = useSelector(
-    (state: RootState) => state.board.columns
+    (state: { boardReducer: { columns: Column[] | null } }) =>
+      state.boardReducer?.columns
   );
   // 6. Optimize the component by memoizing the selectedBoard value to avoid
   // unnecessary re-renders.
@@ -74,6 +81,11 @@ const BoardPage = () => {
       over &&
       active.id !== over.id
     ) {
+      // Create a copy of the columns
+      const newColumns = memoizedSelectedColumns
+        ? memoizedSelectedColumns.map((column) => ({ ...column }))
+        : [];
+
       // Find the active container and over container (tasks)
       const activeContainer = findValueOfItems(active.id, "item");
       const overContainer = findValueOfItems(over.id, "item");
@@ -82,10 +94,10 @@ const BoardPage = () => {
       if (!activeContainer || !overContainer) return;
 
       // Find the index of the active and over container (column)
-      const activeColumnIndex = memoizedSelectedColumns!.findIndex(
+      const activeColumnIndex = newColumns.findIndex(
         (column) => column.id === activeContainer.id
       );
-      const overColumnIndex = memoizedSelectedColumns!.findIndex(
+      const overColumnIndex = newColumns.findIndex(
         (column) => column.id === overContainer.id
       );
 
@@ -125,17 +137,17 @@ const BoardPage = () => {
       over &&
       active.id !== over.id
     ) {
+      // Create a copy of the columns
+      const newColumns = memoizedSelectedColumns
+        ? memoizedSelectedColumns.map((column) => ({ ...column }))
+        : [];
+
       // Find the active and over container
       const activeContainer = findValueOfItems(active.id, "item");
       const overContainer = findValueOfItems(over.id, "container");
 
       // If the active or over container is not found, return
       if (!activeContainer || !overContainer) return;
-
-      // Create a copy of the columns
-      const newColumns = memoizedSelectedColumns
-        ? memoizedSelectedColumns.map((column) => ({ ...column }))
-        : [];
 
       // Find the index of the active and over container
       const activeContainerIndex = newColumns.findIndex(
@@ -170,17 +182,17 @@ const BoardPage = () => {
       over &&
       active.id !== over.id
     ) {
+      // Create a copy of the columns
+      const newColumns = memoizedSelectedColumns
+        ? memoizedSelectedColumns.map((column) => ({ ...column }))
+        : [];
+
       // Find the active and over container
       const activeContainer = findValueOfItems(active.id, "item");
       const overContainer = findValueOfItems(over.id, "item");
 
       // If the active or over container is not found, return
       if (!activeContainer || !overContainer) return;
-
-      // Create a copy of the columns
-      const newColumns = memoizedSelectedColumns
-        ? memoizedSelectedColumns.map((column) => ({ ...column }))
-        : [];
 
       // Find the active and over column indices
       const activeColumnIndex = newColumns.findIndex(
@@ -236,17 +248,17 @@ const BoardPage = () => {
       over &&
       active.id !== over.id
     ) {
+      // Create a copy of the columns
+      const newColumns = memoizedSelectedColumns
+        ? memoizedSelectedColumns.map((column) => ({ ...column }))
+        : [];
+
       // Find the active and over container
       const activeContainer = findValueOfItems(active.id, "item");
       const overContainer = findValueOfItems(over.id, "container");
 
       // If the active or over container is not found, return
       if (!activeContainer || !overContainer) return;
-
-      // Create a copy of the columns
-      const newColumns = memoizedSelectedColumns
-        ? memoizedSelectedColumns.map((column) => ({ ...column }))
-        : [];
 
       // Find the active and over column indices
       const activeColumnIndex = newColumns.findIndex(
@@ -281,6 +293,19 @@ const BoardPage = () => {
     // Clear the activeId state
     setActiveId(null);
   };
+
+  // const memoizedFindValueOfItems = useMemo(() => {
+  //   return (id: UniqueIdentifier | null, type: string, columns?: Column[]) => {
+  //     if (type === "container") {
+  //       return columns?.find((column) => column.id === id);
+  //     }
+  //     if (type === "item") {
+  //       return columns?.find((column) =>
+  //         column.tasks.find((item) => item.id === id)
+  //       );
+  //     }
+  //   };
+  // }, []);
 
   const findValueOfItems = (id: UniqueIdentifier | null, type: string) => {
     if (type === "container") {
