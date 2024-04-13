@@ -26,6 +26,8 @@ import { RootState } from "../store";
 import { Column } from "../models/board.model";
 
 const BoardPage = () => {
+  // TODO: NOTE: Changes in state for subtasks don't work when using the boardReducer, however it DOES work when using boardSlice.
+  // TODO: NOTE: When using boardSlice, the app crashes when using the drag and drop feature, however it DOES work when using boardReducer. (Fix this later)
   // 4. Use the useSelector hook to get the state.setSelectedBoard object,
   // and use the useState hook to store the selectedBoard.data in the local state.
   // NEW:
@@ -213,30 +215,42 @@ const BoardPage = () => {
       // If the active and over columns are the same
       if (activeColumnIndex === overColumnIndex) {
         // Move the active item to the new position within the same column
-        const newTasks = [...newColumns[activeColumnIndex!].tasks];
-        const [removedItem] = newTasks.splice(activeItemIndex, 1);
-        newTasks.splice(overItemIndex, 0, removedItem);
+        // const newTasks = [...newColumns[activeColumnIndex!].tasks];
+        // const [removedItem] = newTasks.splice(activeItemIndex, 1);
+        // newTasks.splice(overItemIndex, 0, removedItem);
 
-        newColumns[activeColumnIndex!] = {
-          ...newColumns![activeColumnIndex!],
-          tasks: newTasks,
-        };
+        // newColumns[activeColumnIndex!] = {
+        //   ...newColumns![activeColumnIndex!],
+        //   tasks: newTasks,
+        // };
+        // NEW:
+        newColumns[activeColumnIndex].tasks = arrayMove(
+          newColumns[activeColumnIndex].tasks,
+          activeItemIndex,
+          overItemIndex
+        );
       } else {
         // Move the active item from the active column to the over column
-        const newActiveTasks = [...newColumns[activeColumnIndex!].tasks];
-        const [removedItem] = newActiveTasks.splice(activeItemIndex, 1);
+        // const newActiveTasks = [...newColumns[activeColumnIndex!].tasks];
+        // const [removedItem] = newActiveTasks.splice(activeItemIndex, 1);
 
-        const newOverTasks = [...newColumns[overColumnIndex!].tasks];
-        newOverTasks.splice(overItemIndex, 0, removedItem);
+        // const newOverTasks = [...newColumns[overColumnIndex!].tasks];
+        // newOverTasks.splice(overItemIndex, 0, removedItem);
 
-        newColumns[activeColumnIndex!] = {
-          ...newColumns[activeColumnIndex!],
-          tasks: newActiveTasks,
-        };
-        newColumns[overColumnIndex!] = {
-          ...newColumns[overColumnIndex!],
-          tasks: newOverTasks,
-        };
+        // newColumns[activeColumnIndex!] = {
+        //   ...newColumns[activeColumnIndex!],
+        //   tasks: newActiveTasks,
+        // };
+        // newColumns[overColumnIndex!] = {
+        //   ...newColumns[overColumnIndex!],
+        //   tasks: newOverTasks,
+        // };
+        // NEW:
+        const [removedItem] = newColumns[activeColumnIndex].tasks.splice(
+          activeItemIndex,
+          1
+        );
+        newColumns[overColumnIndex].tasks.splice(overItemIndex, 0, removedItem);
       }
     }
 
@@ -274,38 +288,31 @@ const BoardPage = () => {
       );
 
       // Move the active item from the active column to the over column
-      const newActiveTasks = [...newColumns[activeColumnIndex!].tasks];
-      const [removedItem] = newActiveTasks.splice(activeItemIndex, 1);
+      // const newActiveTasks = [...newColumns[activeColumnIndex!].tasks];
+      // const [removedItem] = newActiveTasks.splice(activeItemIndex, 1);
 
-      const newOverTasks = [...newColumns[overColumnIndex!].tasks];
-      newOverTasks.push(removedItem);
+      // const newOverTasks = [...newColumns[overColumnIndex!].tasks];
+      // newOverTasks.push(removedItem);
 
-      newColumns[activeColumnIndex!] = {
-        ...newColumns[activeColumnIndex!],
-        tasks: newActiveTasks,
-      };
-      newColumns[overColumnIndex!] = {
-        ...newColumns[overColumnIndex!],
-        tasks: newOverTasks,
-      };
+      // newColumns[activeColumnIndex!] = {
+      //   ...newColumns[activeColumnIndex!],
+      //   tasks: newActiveTasks,
+      // };
+      // newColumns[overColumnIndex!] = {
+      //   ...newColumns[overColumnIndex!],
+      //   tasks: newOverTasks,
+      // };
+      // NEW:
+      const [removedItem] = newColumns[activeColumnIndex].tasks.splice(
+        activeItemIndex,
+        1
+      );
+      newColumns[overColumnIndex].tasks.push(removedItem);
     }
 
     // Clear the activeId state
     setActiveId(null);
   };
-
-  // const memoizedFindValueOfItems = useMemo(() => {
-  //   return (id: UniqueIdentifier | null, type: string, columns?: Column[]) => {
-  //     if (type === "container") {
-  //       return columns?.find((column) => column.id === id);
-  //     }
-  //     if (type === "item") {
-  //       return columns?.find((column) =>
-  //         column.tasks.find((item) => item.id === id)
-  //       );
-  //     }
-  //   };
-  // }, []);
 
   const findValueOfItems = (id: UniqueIdentifier | null, type: string) => {
     if (type === "container") {

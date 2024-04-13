@@ -5,19 +5,27 @@ import { useState } from "react";
 import Dialog from "./Dialog";
 import ViewTaskModal from "./modals/ViewTaskModal";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedTask, updateTask } from "../slices/boardSlice";
+// import { setSelectedTask } from "../slices/boardSlice";
 import { RootState } from "../store";
+import { updateTask, setSelectedTask } from "../actions/boardActions";
 
 interface Props {
   columns: Column[] | null;
 }
 
 const Columns: React.FC<Props> = ({ columns }) => {
+  // TODO: NOTE: If you select the TaskCard that's been dragged, after dragging it,
+  // TODO: it gives you the following error: Uncaught Error: A state mutation was detected between dispatches, in the path 'boardReducer.columns.0.tasks.0'.  This may cause incorrect behavior.
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const dispatch = useDispatch();
+  // const selectedTask = useSelector(
+  //   (state: RootState) => state.board.selectedTask
+  // );
   const selectedTask = useSelector(
-    (state: RootState) => state.board.selectedTask
+    (state: { boardReducer: { selectedTask: Task | null } }) =>
+      state.boardReducer.selectedTask
   );
 
   const handleTaskUpdate = (updatedTask: Task) => {

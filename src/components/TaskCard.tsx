@@ -38,7 +38,10 @@ const TaskCard: React.FC<Props> = ({ id, task, handleOpenModal }) => {
       }}
     >
       <div className="card-body">
-        <p className="card-title text-black text-sm" onClick={handleClick}>
+        <p
+          className="card-title text-black text-sm transition duration-150 hover:text-gray-400"
+          onClick={handleClick}
+        >
           {task?.title}
         </p>
         <p>{task?.subtasks.length} subtasks</p>
