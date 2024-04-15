@@ -44,7 +44,9 @@ const TaskCard: React.FC<Props> = ({ id, task, handleOpenModal }) => {
         >
           {task?.title}
         </p>
-        <p>{task?.subtasks.length} subtasks</p>
+        {task !== null &&
+          task?.subtasks !== null &&
+          task.subtasks.length > 0 && <p>{task?.subtasks.length} subtasks</p>}
       </div>
       <button {...listeners}>Drag</button>
     </div>
