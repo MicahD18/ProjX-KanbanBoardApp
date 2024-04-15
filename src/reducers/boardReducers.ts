@@ -37,20 +37,6 @@ export default function boardReducer(
         name: action.payload,
       };
     case UPDATE_TASK:
-      // // eslint-disable-next-line no-case-declarations
-      // const updatedTask = action.payload;
-      // // eslint-disable-next-line no-case-declarations
-      // const column = state.columns?.find((col) =>
-      //   col.tasks.some((task) => task.id === updatedTask.id)
-      // );
-      // if (column) {
-      //   const taskIndex = column.tasks.findIndex(
-      //     (task) => task.id === updatedTask.id
-      //   );
-      //   column.tasks[taskIndex] = updatedTask;
-      // }
-      // return { ...state, selectedTask: updatedTask };
-      // NEW:
       // eslint-disable-next-line no-case-declarations
       const updatedTask = action.payload;
       // eslint-disable-next-line no-case-declarations

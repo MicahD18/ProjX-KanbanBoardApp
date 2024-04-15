@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import { RootState } from "../store";
 import { updateTask, setSelectedTask } from "../actions/boardActions";
 import EditTaskModal from "./modals/EditTaskModal";
+import DeleteModal from "./modals/DeleteModal";
 
 interface Props {
   columns: Column[] | null;
@@ -20,9 +21,9 @@ const Columns: React.FC<Props> = ({ columns }) => {
   // TODO: NOTE: Try using the built-in state management provided by the @dnd-kit/core library. This way, we can avoid the direct state mutation in the reducer
   // TODO: and handle the drag and drop logic in a more straightforward manner.
   // State that handles the modals
-  const [currentModal, setCurrentModal] = useState<"view" | "edit" | null>(
-    null
-  );
+  const [currentModal, setCurrentModal] = useState<
+    "view" | "edit" | "delete" | null
+  >(null);
 
   const dispatch = useDispatch();
   // const selectedTask = useSelector(
@@ -44,6 +45,16 @@ const Columns: React.FC<Props> = ({ columns }) => {
     setCurrentModal("edit");
   };
 
+  // Open delete modal:
+  const openDeleteModal = () => {
+    setCurrentModal("delete");
+  };
+
+  // handle task deletion:
+  const handleTaskDelete = (task: Task) => {
+    console.log("Handle delete task:", task);
+  };
+
   const handleTaskUpdate = (updatedTask: Task) => {
     dispatch(updateTask(updatedTask));
   };
@@ -58,6 +69,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
             task={selectedTask}
             onTaskUpdate={handleTaskUpdate}
             handleEditTask={handleEditTask}
+            handleDeleteTask={openDeleteModal}
           />
         )}
       </Dialog>
@@ -69,6 +81,11 @@ const Columns: React.FC<Props> = ({ columns }) => {
             onSaveTask={handleTaskUpdate}
             onClose={() => setCurrentModal("view")}
           />
+        )}
+      </Dialog>
+      <Dialog isOpen={currentModal === "delete"}>
+        {selectedTask && (
+          <DeleteModal task={selectedTask} onTaskDelete={handleTaskDelete} />
         )}
       </Dialog>
       {columns?.map((column: Column) => (
