@@ -19,9 +19,10 @@ const Columns: React.FC<Props> = ({ columns }) => {
   // TODO: it gives you the following error: Uncaught Error: A state mutation was detected between dispatches, in the path 'boardReducer.columns.0.tasks.0'.  This may cause incorrect behavior.
   // TODO: NOTE: Try using the built-in state management provided by the @dnd-kit/core library. This way, we can avoid the direct state mutation in the reducer
   // TODO: and handle the drag and drop logic in a more straightforward manner.
-
-  const [showViewTaskModal, setShowViewTaskModal] = useState(false); // View Task Modal
-  const [showEditTaskModal, setShowEditTaskModal] = useState(false); // Edit Task Modal
+  // State that handles the modals
+  const [currentModal, setCurrentModal] = useState<"view" | "edit" | null>(
+    null
+  );
 
   const dispatch = useDispatch();
   // const selectedTask = useSelector(
@@ -32,39 +33,28 @@ const Columns: React.FC<Props> = ({ columns }) => {
       state.boardReducer.selectedTask
   );
 
-  const handleTaskUpdate = (updatedTask: Task) => {
-    dispatch(updateTask(updatedTask));
-  };
-
-  const handleEditTask = () => {
-    // dispatch(setSelectedTask(task));
-    setShowEditTaskModal(true);
-    setShowViewTaskModal(false);
-  };
-
+  // View task modal:
   const handleOpenModal = (task: Task) => {
     dispatch(setSelectedTask(task));
-    setShowViewTaskModal(true);
+    setCurrentModal("view");
   };
 
-  const closeViewTaskModal = () => {
-    setShowViewTaskModal(false);
-    setSelectedTask(null);
+  // Edit task modal:
+  const handleEditTask = () => {
+    setCurrentModal("edit");
   };
 
-  const closeEditTaskModal = () => {
-    setShowViewTaskModal(true);
-    setShowEditTaskModal(false);
-    setSelectedTask(null);
+  const handleTaskUpdate = (updatedTask: Task) => {
+    dispatch(updateTask(updatedTask));
   };
 
   return (
     <>
       {/* VIEW TASK DIALOG */}
-      <Dialog isOpen={showViewTaskModal}>
+      <Dialog isOpen={currentModal === "view"}>
         {selectedTask && (
           <ViewTaskModal
-            onClose={closeViewTaskModal}
+            onClose={() => setCurrentModal(null)}
             task={selectedTask}
             onTaskUpdate={handleTaskUpdate}
             handleEditTask={handleEditTask}
@@ -72,12 +62,12 @@ const Columns: React.FC<Props> = ({ columns }) => {
         )}
       </Dialog>
       {/* EDIT TASK DIALOG */}
-      <Dialog isOpen={showEditTaskModal}>
+      <Dialog isOpen={currentModal === "edit"}>
         {selectedTask && (
           <EditTaskModal
             task={selectedTask}
             onSaveTask={handleTaskUpdate}
-            onClose={closeEditTaskModal}
+            onClose={() => setCurrentModal("view")}
           />
         )}
       </Dialog>
