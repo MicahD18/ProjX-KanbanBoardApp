@@ -6,8 +6,9 @@ import Dialog from "./Dialog";
 import ViewTaskModal from "./modals/ViewTaskModal";
 import { useDispatch, useSelector } from "react-redux";
 // import { setSelectedTask } from "../slices/boardSlice";
-import { RootState } from "../store";
+// import { RootState } from "../store";
 import { updateTask, setSelectedTask } from "../actions/boardActions";
+import EditTaskModal from "./modals/EditTaskModal";
 
 interface Props {
   columns: Column[] | null;
@@ -16,8 +17,12 @@ interface Props {
 const Columns: React.FC<Props> = ({ columns }) => {
   // TODO: NOTE: If you select the TaskCard that's been dragged, after dragging it,
   // TODO: it gives you the following error: Uncaught Error: A state mutation was detected between dispatches, in the path 'boardReducer.columns.0.tasks.0'.  This may cause incorrect behavior.
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // TODO: NOTE: Try using the built-in state management provided by the @dnd-kit/core library. This way, we can avoid the direct state mutation in the reducer
+  // TODO: and handle the drag and drop logic in a more straightforward manner.
+  // State that handles the modals
+  const [currentModal, setCurrentModal] = useState<"view" | "edit" | null>(
+    null
+  );
 
   const dispatch = useDispatch();
   // const selectedTask = useSelector(
@@ -28,26 +33,42 @@ const Columns: React.FC<Props> = ({ columns }) => {
       state.boardReducer.selectedTask
   );
 
-  const handleTaskUpdate = (updatedTask: Task) => {
-    dispatch(updateTask(updatedTask));
-  };
-
+  // View task modal:
   const handleOpenModal = (task: Task) => {
     dispatch(setSelectedTask(task));
-    setIsModalOpen(true);
+    setCurrentModal("view");
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedTask(null);
+  // Edit task modal:
+  const handleEditTask = () => {
+    setCurrentModal("edit");
+  };
+
+  const handleTaskUpdate = (updatedTask: Task) => {
+    dispatch(updateTask(updatedTask));
   };
 
   return (
     <>
       {/* VIEW TASK DIALOG */}
-      <Dialog isOpen={isModalOpen} onClose={closeModal}>
+      <Dialog isOpen={currentModal === "view"}>
         {selectedTask && (
-          <ViewTaskModal task={selectedTask} onTaskUpdate={handleTaskUpdate} />
+          <ViewTaskModal
+            onClose={() => setCurrentModal(null)}
+            task={selectedTask}
+            onTaskUpdate={handleTaskUpdate}
+            handleEditTask={handleEditTask}
+          />
+        )}
+      </Dialog>
+      {/* EDIT TASK DIALOG */}
+      <Dialog isOpen={currentModal === "edit"}>
+        {selectedTask && (
+          <EditTaskModal
+            task={selectedTask}
+            onSaveTask={handleTaskUpdate}
+            onClose={() => setCurrentModal("view")}
+          />
         )}
       </Dialog>
       {columns?.map((column: Column) => (

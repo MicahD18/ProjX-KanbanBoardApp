@@ -6,12 +6,19 @@ import { Menu, MenuItem } from "@mui/material";
 interface Props {
   task: Task | null;
   onTaskUpdate: (updatedTask: Task) => void;
+  handleEditTask: () => void;
+  onClose: () => void;
 }
 
-const ViewTaskModal: React.FC<Props> = ({ task, onTaskUpdate }) => {
+const ViewTaskModal: React.FC<Props> = ({
+  task,
+  onTaskUpdate,
+  handleEditTask,
+  onClose,
+}) => {
   const [completedSubtasks, setCompletedSubtasks] = useState<number>(0);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // for popup menu
-  const open = Boolean(anchorEl);
+  const open = Boolean(anchorEl); // for popup menu
 
   useEffect(() => {
     if (task?.subtasks) {
@@ -39,6 +46,7 @@ const ViewTaskModal: React.FC<Props> = ({ task, onTaskUpdate }) => {
     }
   };
 
+  // Menu for editing/deleting task
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -55,7 +63,14 @@ const ViewTaskModal: React.FC<Props> = ({ task, onTaskUpdate }) => {
           <MoreVertIcon />
         </button>
         <Menu open={open} onClose={handleMenuClose} anchorEl={anchorEl}>
-          <MenuItem onClick={handleMenuClose}>Edit Task</MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleEditTask();
+              handleMenuClose();
+            }}
+          >
+            Edit Task
+          </MenuItem>
           <MenuItem onClick={handleMenuClose}>
             <p className="text-red-500">Delete Task</p>
           </MenuItem>
@@ -79,6 +94,14 @@ const ViewTaskModal: React.FC<Props> = ({ task, onTaskUpdate }) => {
           </label>
         </div>
       ))}
+      <div className="modal-action">
+        <button
+          className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white mt-6 h-12 hover:bg-primary_btn_hover"
+          onClick={onClose}
+        >
+          Close
+        </button>
+      </div>
     </>
   );
 };
