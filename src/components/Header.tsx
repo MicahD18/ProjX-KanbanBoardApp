@@ -4,11 +4,16 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import { RootState } from "../store";
+import { Column } from "../models/board.model";
 
 const Header = () => {
   const selectedName = useSelector((state: RootState) => state.board.name);
+  // const selectedColumns = useSelector(
+  //   (state: RootState) => state.board.columns
+  // );
   const selectedColumns = useSelector(
-    (state: RootState) => state.board.columns
+    (state: { boardReducer: { columns: Column[] | null } }) =>
+      state.boardReducer?.columns
   );
   const memoizedSelectedName = useMemo(() => selectedName, [selectedName]);
 
@@ -26,7 +31,7 @@ const Header = () => {
           {memoizedSelectedName}
         </p>
       </div>
-      {selectedColumns.length > 0 && (
+      {selectedColumns !== null && selectedColumns.length > 0 && (
         <div className="flex flex-row items-center gap-4">
           <button className="btn bg-primary_btn_idle border-none plus-jakarta text-white hover:bg-primary_btn_hover">
             <AddIcon />

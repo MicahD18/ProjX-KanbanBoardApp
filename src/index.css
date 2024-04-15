@@ -5,3 +5,11 @@
 .plus-jakarta {
   font-family: "Plus Jakarta Sans", sans-serif;
 }
+
+.button-secondary {
+  background-color: #f0effa;
+  color: #635fc7;
+}
+.button-secondary:hover {
+  background-color: #d8d7f1;
+}
