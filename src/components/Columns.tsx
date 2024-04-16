@@ -53,6 +53,19 @@ const Columns: React.FC<Props> = ({ columns }) => {
   // handle task deletion:
   const handleTaskDelete = (task: Task) => {
     console.log("Handle delete task:", task);
+
+    const updatedColumns = [...columns!];
+    console.log(updatedColumns);
+    updatedColumns.map((value: Column, index: number) => {
+      value.tasks.map((item, i) => {
+        if (item === task) {
+          console.log(index, i);
+          value.tasks.splice(index, 1);
+        }
+      });
+    });
+
+    setCurrentModal(null);
   };
 
   const handleTaskUpdate = (updatedTask: Task) => {
@@ -85,7 +98,11 @@ const Columns: React.FC<Props> = ({ columns }) => {
       </Dialog>
       <Dialog isOpen={currentModal === "delete"}>
         {selectedTask && (
-          <DeleteModal task={selectedTask} onTaskDelete={handleTaskDelete} />
+          <DeleteModal
+            item={selectedTask}
+            onTaskDelete={handleTaskDelete}
+            onClose={() => setCurrentModal("view")}
+          />
         )}
       </Dialog>
       {columns?.map((column: Column) => (
