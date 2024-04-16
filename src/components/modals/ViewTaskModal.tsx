@@ -7,6 +7,7 @@ interface Props {
   task: Task | null;
   onTaskUpdate: (updatedTask: Task) => void;
   handleEditTask: () => void;
+  handleDeleteTask: () => void;
   onClose: () => void;
 }
 
@@ -14,6 +15,7 @@ const ViewTaskModal: React.FC<Props> = ({
   task,
   onTaskUpdate,
   handleEditTask,
+  handleDeleteTask,
   onClose,
 }) => {
   const [completedSubtasks, setCompletedSubtasks] = useState<number>(0);
@@ -71,7 +73,12 @@ const ViewTaskModal: React.FC<Props> = ({
           >
             Edit Task
           </MenuItem>
-          <MenuItem onClick={handleMenuClose}>
+          <MenuItem
+            onClick={() => {
+              handleDeleteTask();
+              handleMenuClose();
+            }}
+          >
             <p className="text-red-500">Delete Task</p>
           </MenuItem>
         </Menu>
