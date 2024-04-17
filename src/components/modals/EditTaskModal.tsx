@@ -4,7 +4,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 
 interface Props {
-  task: Task;
+  task?: Task;
   onSaveTask: (updatedTask: Task) => void;
   onClose: () => void;
 }
@@ -24,10 +24,12 @@ const EditTaskModal: React.FC<Props> = ({ task, onSaveTask, onClose }) => {
 
   // Listen for changes in the task prop and update the state
   useEffect(() => {
-    setTitle(task.title);
-    setDescription(task.description);
-    setSubtasks(task.subtasks);
-    setOriginalTask({ ...task });
+    if (task) {
+      setTitle(task.title);
+      setDescription(task.description);
+      setSubtasks(task.subtasks);
+      setOriginalTask({ ...task });
+    }
   }, [task]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,13 +66,15 @@ const EditTaskModal: React.FC<Props> = ({ task, onSaveTask, onClose }) => {
   };
 
   const handleAddSubtask = () => {
-    const newSubtask: Subtask = {
-      id: task.subtasks.length + 1,
-      title: "",
-      isCompleted: false,
-    };
-    const updatedSubtasks = [...subtasks, newSubtask];
-    setSubtasks(updatedSubtasks);
+    if (task) {
+      const newSubtask: Subtask = {
+        id: task.subtasks.length + 1,
+        title: "",
+        isCompleted: false,
+      };
+      const updatedSubtasks = [...subtasks, newSubtask];
+      setSubtasks(updatedSubtasks);
+    }
   };
 
   const handleSaveTask = () => {
@@ -88,14 +92,16 @@ const EditTaskModal: React.FC<Props> = ({ task, onSaveTask, onClose }) => {
       return;
     }
 
-    const updatedTask: Task = {
-      ...task,
-      title,
-      description,
-      subtasks,
-    };
-    onSaveTask(updatedTask);
-    onClose();
+    if (task) {
+      const updatedTask: Task = {
+        ...task,
+        title,
+        description,
+        subtasks,
+      };
+      onSaveTask(updatedTask);
+      onClose();
+    }
   };
 
   const handleCancel = () => {
@@ -104,15 +110,19 @@ const EditTaskModal: React.FC<Props> = ({ task, onSaveTask, onClose }) => {
       setTitle(originalTask.title);
       setDescription(originalTask.description);
       setSubtasks(originalTask.subtasks);
+      onClose();
     }
-
     onClose();
   };
 
   return (
     <>
       <div className="flex flex-row w-full justify-between">
-        <h3 className="font-bold text-lg text-black">Edit Task</h3>
+        {task ? (
+          <h3 className="font-bold text-lg text-black">Edit Task</h3>
+        ) : (
+          <h3 className="font-bold text-lg text-black">Add New Task</h3>
+        )}
       </div>
       <div className="form-group flex flex-col mt-4">
         <label htmlFor="title" className="mb-2">
@@ -174,20 +184,38 @@ const EditTaskModal: React.FC<Props> = ({ task, onSaveTask, onClose }) => {
         <AddIcon />
         Add New Subtask
       </button>
-      <div className="modal-actions flex flex-row gap-3 items-center mt-8 justify-between">
-        <button
-          className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white h-12 hover:bg-primary_btn_hover w-52"
-          onClick={handleSaveTask}
-        >
-          Save Changes
-        </button>
-        <button
-          className="btn button-secondary border-none w-52"
-          onClick={handleCancel}
-        >
-          Cancel
-        </button>
-      </div>
+      {task && (
+        <div className="modal-actions flex flex-row gap-3 items-center mt-8 justify-between">
+          <button
+            className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white h-12 hover:bg-primary_btn_hover w-52"
+            onClick={handleSaveTask}
+          >
+            Save Changes
+          </button>
+          <button
+            className="btn button-secondary border-none w-52"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+      {!task && (
+        <div className="modal-actions flex flex-row gap-3 items-center mt-8 justify-between">
+          <button
+            className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white h-12 hover:bg-primary_btn_hover w-52"
+            onClick={handleSaveTask}
+          >
+            Create Task
+          </button>
+          <button
+            className="btn button-secondary border-none w-52"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
     </>
   );
 };

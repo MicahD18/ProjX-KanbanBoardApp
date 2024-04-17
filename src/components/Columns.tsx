@@ -15,6 +15,7 @@ import EditTaskModal from "./modals/EditTaskModal";
 import DeleteModal from "./modals/DeleteModal";
 import {
   closeModal,
+  openCreateModal,
   openDeleteModal,
   openEditModal,
   openViewModal,
@@ -53,8 +54,12 @@ const Columns: React.FC<Props> = ({ columns }) => {
     dispatch(openEditModal());
   };
 
-  const handleDeleteModal = () => {
+  const handleOpenDeleteModal = () => {
     dispatch(openDeleteModal());
+  };
+
+  const handleOpenCreateModal = () => {
+    dispatch(openCreateModal());
   };
 
   const handleCloseModal = () => {
@@ -88,7 +93,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
             task={selectedTask}
             onTaskUpdate={handleTaskUpdate}
             handleEditTask={handleOpenEditModal}
-            handleDeleteTask={handleDeleteModal}
+            handleDeleteTask={handleOpenDeleteModal}
           />
         )}
       </Dialog>
@@ -102,6 +107,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
           />
         )}
       </Dialog>
+      {/* DELETE TASK DIALOG */}
       <Dialog isOpen={currentModal === "delete"}>
         {selectedTask && (
           <DeleteModal
@@ -110,6 +116,13 @@ const Columns: React.FC<Props> = ({ columns }) => {
             onClose={handleOpenViewModal}
           />
         )}
+      </Dialog>
+      {/* CREATE TASK DIALOG */}
+      <Dialog isOpen={currentModal === "create"}>
+        <EditTaskModal
+          onSaveTask={handleTaskUpdate}
+          onClose={handleCloseModal}
+        />
       </Dialog>
       {columns?.map((column: Column) => (
         // container/column
@@ -140,7 +153,10 @@ const Columns: React.FC<Props> = ({ columns }) => {
                   handleOpenModal={handleOpenViewModal}
                 />
               ))}
-              <button className="text-medium_gray font-semibold hover:bg-gray-300 py-2 transition duration-300 rounded-md">
+              <button
+                className="text-medium_gray font-semibold hover:bg-gray-300 py-2 transition duration-300 rounded-md"
+                onClick={handleOpenCreateModal}
+              >
                 <span className="text-lg">+</span> New Task
               </button>
             </div>

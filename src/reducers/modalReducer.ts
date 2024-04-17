@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   CLOSE_MODAL,
+  CREATE_MODAL,
   DELETE_MODAL,
   OPEN_EDIT_MODAL,
   OPEN_VIEW_MODAL,
 } from "../actions/modalActions";
 
 export type ModalState = {
-  currentModal: "view" | "edit" | "delete" | null;
+  currentModal: "view" | "edit" | "delete" | "create" | null;
 };
 
 export const initialModalState: ModalState = {
@@ -25,6 +26,8 @@ export default function modalReducer(
       return { ...state, currentModal: "edit" };
     case DELETE_MODAL:
       return { ...state, currentModal: "delete" };
+    case CREATE_MODAL:
+      return { ...state, currentModal: "create" };
     case CLOSE_MODAL:
       return { ...state, currentModal: null };
     default:

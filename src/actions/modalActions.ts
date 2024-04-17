@@ -1,6 +1,7 @@
 export const OPEN_VIEW_MODAL = "OPEN_VIEW_MODAL";
 export const OPEN_EDIT_MODAL = "OPEN_EDIT_MODAL";
 export const DELETE_MODAL = "DELETE_MODAL";
+export const CREATE_MODAL = "CREATE_MODAL";
 export const CLOSE_MODAL = "CLOSE_MODAL";
 
 export const openViewModal = () => {
@@ -18,6 +19,12 @@ export const openEditModal = () => {
 export const openDeleteModal = () => {
   return {
     type: DELETE_MODAL,
+  };
+};
+
+export const openCreateModal = () => {
+  return {
+    type: CREATE_MODAL,
   };
 };
 
