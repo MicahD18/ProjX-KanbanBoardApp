@@ -85,13 +85,13 @@ const ViewTaskModal: React.FC<Props> = ({
       </div>
 
       <p className="py-4 text-medium_gray">{task?.description}</p>
-      {task !== null && task?.subtasks !== null && task.subtasks.length > 0 && (
+      {task?.subtasks && task.subtasks.length > 0 && (
         <p>
-          Subtasks ({completedSubtasks} of {task?.subtasks.length})
+          Subtasks ({completedSubtasks} of {task.subtasks.length})
         </p>
       )}
 
-      {task?.subtasks.map((subtask, index) => (
+      {task?.subtasks?.map((subtask, index) => (
         <div key={subtask.id} className="form-control">
           <label className="label cursor-pointer">
             <input

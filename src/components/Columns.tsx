@@ -1,15 +1,25 @@
 import { SortableContext } from "@dnd-kit/sortable";
 import { Column, Task } from "../models/board.model";
 import TaskCard from "./TaskCard";
-import { useState } from "react";
 import Dialog from "./Dialog";
 import ViewTaskModal from "./modals/ViewTaskModal";
 import { useDispatch, useSelector } from "react-redux";
 // import { setSelectedTask } from "../slices/boardSlice";
 // import { RootState } from "../store";
-import { updateTask, setSelectedTask } from "../actions/boardActions";
+import {
+  updateTask,
+  setSelectedTask,
+  setColumns,
+} from "../actions/boardActions";
 import EditTaskModal from "./modals/EditTaskModal";
 import DeleteModal from "./modals/DeleteModal";
+import {
+  closeModal,
+  openDeleteModal,
+  openEditModal,
+  openViewModal,
+} from "../actions/modalActions";
+import { RootState } from "../store";
 
 interface Props {
   columns: Column[] | null;
@@ -20,12 +30,11 @@ const Columns: React.FC<Props> = ({ columns }) => {
   // TODO: it gives you the following error: Uncaught Error: A state mutation was detected between dispatches, in the path 'boardReducer.columns.0.tasks.0'.  This may cause incorrect behavior.
   // TODO: NOTE: Try using the built-in state management provided by the @dnd-kit/core library. This way, we can avoid the direct state mutation in the reducer
   // TODO: and handle the drag and drop logic in a more straightforward manner.
-  // State that handles the modals
-  const [currentModal, setCurrentModal] = useState<
-    "view" | "edit" | "delete" | null
-  >(null);
-
   const dispatch = useDispatch();
+  // State that handles the modals
+  const { currentModal } = useSelector(
+    (state: RootState) => state.modalReducer
+  );
   // const selectedTask = useSelector(
   //   (state: RootState) => state.board.selectedTask
   // );
@@ -35,37 +44,34 @@ const Columns: React.FC<Props> = ({ columns }) => {
   );
 
   // View task modal:
-  const handleOpenModal = (task: Task) => {
-    dispatch(setSelectedTask(task));
-    setCurrentModal("view");
+  const handleOpenViewModal = (task?: Task) => {
+    if (task) dispatch(setSelectedTask(task));
+    dispatch(openViewModal());
   };
 
-  // Edit task modal:
-  const handleEditTask = () => {
-    setCurrentModal("edit");
+  const handleOpenEditModal = () => {
+    dispatch(openEditModal());
   };
 
-  // Open delete modal:
-  const openDeleteModal = () => {
-    setCurrentModal("delete");
+  const handleDeleteModal = () => {
+    dispatch(openDeleteModal());
+  };
+
+  const handleCloseModal = () => {
+    dispatch(closeModal());
   };
 
   // handle task deletion:
   const handleTaskDelete = (task: Task) => {
-    console.log("Handle delete task:", task);
+    const updatedColumns = columns?.map((column) => ({
+      ...column,
+      tasks: column.tasks.filter((t) => t.id !== task.id),
+    }));
 
-    const updatedColumns = [...columns!];
-    console.log(updatedColumns);
-    updatedColumns.map((value: Column, index: number) => {
-      value.tasks.map((item, i) => {
-        if (item === task) {
-          console.log(index, i);
-          value.tasks.splice(index, 1);
-        }
-      });
-    });
-
-    setCurrentModal(null);
+    if (updatedColumns) {
+      dispatch(setColumns(updatedColumns));
+      handleCloseModal();
+    }
   };
 
   const handleTaskUpdate = (updatedTask: Task) => {
@@ -78,11 +84,11 @@ const Columns: React.FC<Props> = ({ columns }) => {
       <Dialog isOpen={currentModal === "view"}>
         {selectedTask && (
           <ViewTaskModal
-            onClose={() => setCurrentModal(null)}
+            onClose={handleCloseModal}
             task={selectedTask}
             onTaskUpdate={handleTaskUpdate}
-            handleEditTask={handleEditTask}
-            handleDeleteTask={openDeleteModal}
+            handleEditTask={handleOpenEditModal}
+            handleDeleteTask={handleDeleteModal}
           />
         )}
       </Dialog>
@@ -92,7 +98,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
           <EditTaskModal
             task={selectedTask}
             onSaveTask={handleTaskUpdate}
-            onClose={() => setCurrentModal("view")}
+            onClose={handleOpenViewModal}
           />
         )}
       </Dialog>
@@ -101,7 +107,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
           <DeleteModal
             item={selectedTask}
             onTaskDelete={handleTaskDelete}
-            onClose={() => setCurrentModal("view")}
+            onClose={handleOpenViewModal}
           />
         )}
       </Dialog>
@@ -131,7 +137,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
                   key={task.id}
                   id={task.id}
                   task={task}
-                  handleOpenModal={handleOpenModal}
+                  handleOpenModal={handleOpenViewModal}
                 />
               ))}
               <button className="text-medium_gray font-semibold hover:bg-gray-300 py-2 transition duration-300 rounded-md">

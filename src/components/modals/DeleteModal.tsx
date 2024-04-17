@@ -52,7 +52,7 @@ const DeleteModal: React.FC<Props> = ({
         </button>
         <button
           className="btn button-secondary border-none w-52"
-          onClick={onClose}
+          onClick={() => onClose()}
         >
           Cancel
         </button>

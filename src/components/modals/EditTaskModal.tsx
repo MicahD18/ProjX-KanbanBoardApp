@@ -10,14 +10,12 @@ interface Props {
 }
 
 const EditTaskModal: React.FC<Props> = ({ task, onSaveTask, onClose }) => {
-  const [title, setTitle] = useState(task.title);
-  const [description, setDescription] = useState(task.description);
-  const [subtasks, setSubtasks] = useState(task.subtasks);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [subtasks, setSubtasks] = useState<Subtask[]>([]);
 
   // Keep track of the original task data
-  const [originalTask, setOriginalTask] = useState<Task>({
-    ...task,
-  });
+  const [originalTask, setOriginalTask] = useState<Task | null>(null);
 
   // State to track subtask input errors
   const [subtaskInputErrors, setSubtaskInputErrors] = useState<
@@ -101,10 +99,13 @@ const EditTaskModal: React.FC<Props> = ({ task, onSaveTask, onClose }) => {
   };
 
   const handleCancel = () => {
-    // Restore the state to the original task data
-    setTitle(originalTask.title);
-    setDescription(originalTask.description);
-    setSubtasks(originalTask.subtasks);
+    if (originalTask) {
+      // Restore the state to the original task data
+      setTitle(originalTask.title);
+      setDescription(originalTask.description);
+      setSubtasks(originalTask.subtasks);
+    }
+
     onClose();
   };
 
