@@ -15,11 +15,13 @@ import EditTaskModal from "./modals/EditTaskModal";
 import DeleteModal from "./modals/DeleteModal";
 import {
   closeModal,
+  openCreateModal,
   openDeleteModal,
   openEditModal,
   openViewModal,
 } from "../actions/modalActions";
 import { RootState } from "../store";
+import { useState } from "react";
 
 interface Props {
   columns: Column[] | null;
@@ -42,6 +44,8 @@ const Columns: React.FC<Props> = ({ columns }) => {
     (state: { boardReducer: { selectedTask: Task | null } }) =>
       state.boardReducer.selectedTask
   );
+  // column id state to keep track and know which column a task is in
+  const [columnIndex, setColumnIndex] = useState<number>(0);
 
   // View task modal:
   const handleOpenViewModal = (task?: Task) => {
@@ -53,12 +57,18 @@ const Columns: React.FC<Props> = ({ columns }) => {
     dispatch(openEditModal());
   };
 
-  const handleDeleteModal = () => {
+  const handleOpenDeleteModal = () => {
     dispatch(openDeleteModal());
+  };
+
+  const handleOpenCreateModal = (columnIndex: number) => {
+    setColumnIndex(columnIndex);
+    dispatch(openCreateModal());
   };
 
   const handleCloseModal = () => {
     dispatch(closeModal());
+    setColumnIndex(0);
   };
 
   // handle task deletion:
@@ -78,6 +88,22 @@ const Columns: React.FC<Props> = ({ columns }) => {
     dispatch(updateTask(updatedTask));
   };
 
+  const handleTaskCreate = (newTask: Task) => {
+    if (columns) {
+      const updatedColumns = columns.map((column, index) => {
+        if (index === columnIndex) {
+          return {
+            ...column,
+            tasks: [...column.tasks, newTask],
+          };
+        }
+        return column;
+      });
+      dispatch(setColumns(updatedColumns));
+      handleCloseModal();
+    }
+  };
+
   return (
     <>
       {/* VIEW TASK DIALOG */}
@@ -88,7 +114,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
             task={selectedTask}
             onTaskUpdate={handleTaskUpdate}
             handleEditTask={handleOpenEditModal}
-            handleDeleteTask={handleDeleteModal}
+            handleDeleteTask={handleOpenDeleteModal}
           />
         )}
       </Dialog>
@@ -96,12 +122,14 @@ const Columns: React.FC<Props> = ({ columns }) => {
       <Dialog isOpen={currentModal === "edit"}>
         {selectedTask && (
           <EditTaskModal
+            modalType="edit"
             task={selectedTask}
             onSaveTask={handleTaskUpdate}
             onClose={handleOpenViewModal}
           />
         )}
       </Dialog>
+      {/* DELETE TASK DIALOG */}
       <Dialog isOpen={currentModal === "delete"}>
         {selectedTask && (
           <DeleteModal
@@ -111,7 +139,16 @@ const Columns: React.FC<Props> = ({ columns }) => {
           />
         )}
       </Dialog>
-      {columns?.map((column: Column) => (
+      {/* CREATE TASK DIALOG */}
+      <Dialog isOpen={currentModal === "create"}>
+        <EditTaskModal
+          modalType="create"
+          onSaveTask={handleTaskUpdate}
+          onCreateTask={handleTaskCreate}
+          onClose={handleCloseModal}
+        />
+      </Dialog>
+      {columns?.map((column: Column, index: number) => (
         // container/column
         <div key={column.id} className="w-80 my-12">
           {/* top-part of container/column */}
@@ -140,7 +177,10 @@ const Columns: React.FC<Props> = ({ columns }) => {
                   handleOpenModal={handleOpenViewModal}
                 />
               ))}
-              <button className="text-medium_gray font-semibold hover:bg-gray-300 py-2 transition duration-300 rounded-md">
+              <button
+                className="text-medium_gray font-semibold hover:bg-gray-300 py-2 transition duration-300 rounded-md"
+                onClick={() => handleOpenCreateModal(index)}
+              >
                 <span className="text-lg">+</span> New Task
               </button>
             </div>
