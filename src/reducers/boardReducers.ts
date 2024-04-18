@@ -1,20 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PayloadAction } from "@reduxjs/toolkit";
-import { Column, Task } from "../models/board.model";
+import { Board, Column, Task } from "../models/board.model";
 import {
   UPDATE_TASK,
   SET_SELECTED_TASK,
   SET_COLUMNS,
   SET_NAME,
+  SET_BOARD,
 } from "../actions/boardActions";
 
 interface State {
+  board: Board | null;
   columns: Column[] | null;
   name: string | null;
   selectedTask: Task | null;
 }
 
 const initialState: State = {
+  board: null,
   columns: null,
   name: null,
   selectedTask: null,
@@ -30,6 +33,11 @@ export default function boardReducer(
       return {
         ...state,
         columns: action.payload,
+      };
+    case SET_BOARD:
+      return {
+        ...state,
+        board: action.payload,
       };
     case SET_NAME:
       return {

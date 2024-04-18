@@ -3,12 +3,13 @@ import {
   CLOSE_MODAL,
   CREATE_MODAL,
   DELETE_MODAL,
+  EDIT_BOARD_MODAL,
   OPEN_EDIT_MODAL,
   OPEN_VIEW_MODAL,
 } from "../actions/modalActions";
 
 export type ModalState = {
-  currentModal: "view" | "edit" | "delete" | "create" | null;
+  currentModal: "view" | "edit" | "delete" | "create" | "edit_board" | null;
 };
 
 export const initialModalState: ModalState = {
@@ -28,6 +29,8 @@ export default function modalReducer(
       return { ...state, currentModal: "delete" };
     case CREATE_MODAL:
       return { ...state, currentModal: "create" };
+    case EDIT_BOARD_MODAL:
+      return { ...state, currentModal: "edit_board" };
     case CLOSE_MODAL:
       return { ...state, currentModal: null };
     default:
