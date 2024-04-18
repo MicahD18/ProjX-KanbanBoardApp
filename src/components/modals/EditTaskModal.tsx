@@ -2,14 +2,23 @@ import { useEffect, useState } from "react";
 import { Subtask, Task } from "../../models/board.model";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
+  modalType: string;
   task?: Task;
   onSaveTask: (updatedTask: Task) => void;
+  onCreateTask?: (newTask: Task) => void;
   onClose: () => void;
 }
 
-const EditTaskModal: React.FC<Props> = ({ task, onSaveTask, onClose }) => {
+const EditTaskModal: React.FC<Props> = ({
+  modalType,
+  task,
+  onSaveTask,
+  onCreateTask,
+  onClose,
+}) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
@@ -24,13 +33,27 @@ const EditTaskModal: React.FC<Props> = ({ task, onSaveTask, onClose }) => {
 
   // Listen for changes in the task prop and update the state
   useEffect(() => {
-    if (task) {
+    if (modalType === "edit" && task) {
       setTitle(task.title);
       setDescription(task.description);
       setSubtasks(task.subtasks);
       setOriginalTask({ ...task });
     }
-  }, [task]);
+    if (modalType === "create") {
+      // Create new task object and bind the properties to the states for user input
+      const newTask: Task = {
+        id: `item-${uuidv4()}`,
+        title: "",
+        description: "",
+        status: "",
+        subtasks: [],
+      };
+      setTitle(newTask.title);
+      setDescription(newTask.description);
+      setSubtasks(newTask.subtasks);
+      setOriginalTask(null);
+    }
+  }, [task, modalType]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -66,15 +89,13 @@ const EditTaskModal: React.FC<Props> = ({ task, onSaveTask, onClose }) => {
   };
 
   const handleAddSubtask = () => {
-    if (task) {
-      const newSubtask: Subtask = {
-        id: task.subtasks.length + 1,
-        title: "",
-        isCompleted: false,
-      };
-      const updatedSubtasks = [...subtasks, newSubtask];
-      setSubtasks(updatedSubtasks);
-    }
+    const newSubtask: Subtask = {
+      id: subtasks.length + 1,
+      title: "",
+      isCompleted: false,
+    };
+    const updatedSubtasks = [...subtasks, newSubtask];
+    setSubtasks(updatedSubtasks);
   };
 
   const handleSaveTask = () => {
@@ -102,6 +123,37 @@ const EditTaskModal: React.FC<Props> = ({ task, onSaveTask, onClose }) => {
       onSaveTask(updatedTask);
       onClose();
     }
+  };
+
+  const handleCreateTask = () => {
+    // Check if all subtask inputs are filled
+    const hasEmptySubtasks = subtasks.some(
+      (subtask) => subtask.title.trim() === ""
+    );
+    if (hasEmptySubtasks) {
+      subtasks.forEach((subtask, index) => {
+        setSubtaskInputErrors((prevErrors) => ({
+          ...prevErrors,
+          [index]: subtask.title.trim() === "" ? "Can't be empty" : "",
+        }));
+      });
+      return;
+    }
+    const newTask: Task = {
+      id: `item-${uuidv4()}`,
+      title,
+      description,
+      status: "",
+      subtasks,
+    };
+
+    if (onCreateTask) {
+      onCreateTask(newTask);
+    }
+    onClose();
+    setTitle("");
+    setDescription("");
+    setSubtasks([]);
   };
 
   const handleCancel = () => {
@@ -204,7 +256,8 @@ const EditTaskModal: React.FC<Props> = ({ task, onSaveTask, onClose }) => {
         <div className="modal-actions flex flex-row gap-3 items-center mt-8 justify-between">
           <button
             className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white h-12 hover:bg-primary_btn_hover w-52"
-            onClick={handleSaveTask}
+            onClick={handleCreateTask}
+            disabled={title === ""}
           >
             Create Task
           </button>
