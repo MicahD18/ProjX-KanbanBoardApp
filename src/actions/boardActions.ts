@@ -1,9 +1,12 @@
-import { Column, Task } from "../models/board.model";
+import { Board, Column, Task } from "../models/board.model";
 
 export const UPDATE_TASK = "UPDATE_TASK";
 export const SET_SELECTED_TASK = "SET_SELECTED_TASK";
 export const SET_COLUMNS = "SET_COLUMNS";
 export const SET_NAME = "SET_NAME";
+export const SET_BOARD = "SET_BOARD";
+export const UPDATE_BOARD = "UPDATE_BOARD";
+export const SET_BOARDS = "SET_BOARDS";
 
 // 2. Create action with the type "SET_COLUMNS" and data payload
 export const setColumns = (columns: Column[]) => {
@@ -13,10 +16,17 @@ export const setColumns = (columns: Column[]) => {
   };
 };
 
-export const setName = (name: string) => {
+export const setBoard = (board: Board) => {
   return {
-    type: SET_NAME,
-    payload: name,
+    type: SET_BOARD,
+    payload: board,
+  };
+};
+
+export const setBoards = (boards: Board[]) => {
+  return {
+    type: SET_BOARDS,
+    payload: boards,
   };
 };
 

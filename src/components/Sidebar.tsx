@@ -3,22 +3,25 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import AddIcon from "@mui/icons-material/Add";
 
-import { boards } from "../data/data.json";
-
 // models
 import { Board, Column } from "../models/board.model";
-import { useDispatch } from "react-redux";
-import { setColumns } from "../actions/boardActions";
+import { useDispatch, useSelector } from "react-redux";
+import { setBoard, setColumns } from "../actions/boardActions";
 import { setName } from "../slices/boardSlice";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
 
+  const boards = useSelector(
+    (state: { boardReducer: { boards: Board[] } }) => state.boardReducer.boards
+  );
+
   // get the columns from the selected board
-  const handleSelectBoard = (columns: Column[], name: string) => {
+  const handleSelectBoard = (board: Board, columns: Column[], name: string) => {
     // 1. dispatch the setColumns action with the selected board data
     dispatch(setColumns(columns)); // columns -> BoardsPage component
     dispatch(setName(name)); // name -> Header component
+    dispatch(setBoard(board));
   };
 
   return (
@@ -39,7 +42,9 @@ const Sidebar = () => {
             {boards.map((board: Board) => (
               <button
                 key={board.id}
-                onClick={() => handleSelectBoard(board.columns, board.name)}
+                onClick={() =>
+                  handleSelectBoard(board, board.columns, board.name)
+                }
                 className="py-2 text-medium_gray font-semibold flex flex-row gap-2 cursor-pointer px-2 hover:bg-primary_btn_hover hover:text-white rounded-md transition duration-300"
               >
                 <SpaceDashboardIcon />

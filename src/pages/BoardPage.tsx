@@ -214,38 +214,12 @@ const BoardPage = () => {
 
       // If the active and over columns are the same
       if (activeColumnIndex === overColumnIndex) {
-        // Move the active item to the new position within the same column
-        // const newTasks = [...newColumns[activeColumnIndex!].tasks];
-        // const [removedItem] = newTasks.splice(activeItemIndex, 1);
-        // newTasks.splice(overItemIndex, 0, removedItem);
-
-        // newColumns[activeColumnIndex!] = {
-        //   ...newColumns![activeColumnIndex!],
-        //   tasks: newTasks,
-        // };
-        // NEW:
         newColumns[activeColumnIndex].tasks = arrayMove(
           newColumns[activeColumnIndex].tasks,
           activeItemIndex,
           overItemIndex
         );
       } else {
-        // Move the active item from the active column to the over column
-        // const newActiveTasks = [...newColumns[activeColumnIndex!].tasks];
-        // const [removedItem] = newActiveTasks.splice(activeItemIndex, 1);
-
-        // const newOverTasks = [...newColumns[overColumnIndex!].tasks];
-        // newOverTasks.splice(overItemIndex, 0, removedItem);
-
-        // newColumns[activeColumnIndex!] = {
-        //   ...newColumns[activeColumnIndex!],
-        //   tasks: newActiveTasks,
-        // };
-        // newColumns[overColumnIndex!] = {
-        //   ...newColumns[overColumnIndex!],
-        //   tasks: newOverTasks,
-        // };
-        // NEW:
         const [removedItem] = newColumns[activeColumnIndex].tasks.splice(
           activeItemIndex,
           1
@@ -286,23 +260,6 @@ const BoardPage = () => {
       const activeItemIndex = activeContainer.tasks.findIndex(
         (item) => item.id === active.id
       );
-
-      // Move the active item from the active column to the over column
-      // const newActiveTasks = [...newColumns[activeColumnIndex!].tasks];
-      // const [removedItem] = newActiveTasks.splice(activeItemIndex, 1);
-
-      // const newOverTasks = [...newColumns[overColumnIndex!].tasks];
-      // newOverTasks.push(removedItem);
-
-      // newColumns[activeColumnIndex!] = {
-      //   ...newColumns[activeColumnIndex!],
-      //   tasks: newActiveTasks,
-      // };
-      // newColumns[overColumnIndex!] = {
-      //   ...newColumns[overColumnIndex!],
-      //   tasks: newOverTasks,
-      // };
-      // NEW:
       const [removedItem] = newColumns[activeColumnIndex].tasks.splice(
         activeItemIndex,
         1
@@ -346,12 +303,12 @@ const BoardPage = () => {
         <MainNav />
         <div className="flex flex-col items-center bg-cool_gray w-full h-screen justify-center plus-jakarta">
           <p className="text-medium_gray font-semibold text-md">
-            This board is empty. Create a new column to get started.
+            This board is empty. Add a new column to get started.
           </p>
-          <button className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white mt-6 h-12 hover:bg-primary_btn_hover">
+          {/* <button className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white mt-6 h-12 hover:bg-primary_btn_hover">
             <AddIcon />
             Add New Column
-          </button>
+          </button> */}
         </div>
       </div>
     );

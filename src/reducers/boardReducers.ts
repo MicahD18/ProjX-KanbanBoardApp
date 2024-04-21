@@ -1,22 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PayloadAction } from "@reduxjs/toolkit";
-import { Column, Task } from "../models/board.model";
+import { Board, Column, Task } from "../models/board.model";
 import {
   UPDATE_TASK,
   SET_SELECTED_TASK,
   SET_COLUMNS,
-  SET_NAME,
+  SET_BOARD,
+  SET_BOARDS,
 } from "../actions/boardActions";
+import { boards } from "../data/data.json";
+
+const boardsData = [...boards];
 
 interface State {
+  selectedBoard: Board | null;
+  boards: Board[] | null;
   columns: Column[] | null;
-  name: string | null;
   selectedTask: Task | null;
 }
 
 const initialState: State = {
+  selectedBoard: null,
+  boards: boardsData,
   columns: null,
-  name: null,
   selectedTask: null,
 };
 // 3. Reducer handles the "SET_SELECTED_BOARD" action, by updating the state.data
@@ -31,14 +37,19 @@ export default function boardReducer(
         ...state,
         columns: action.payload,
       };
-    case SET_NAME:
+    case SET_BOARDS:
       return {
         ...state,
-        name: action.payload,
+        boards: action.payload,
+      };
+    case SET_BOARD:
+      return {
+        ...state,
+        board: action.payload,
       };
     case UPDATE_TASK:
       // eslint-disable-next-line no-case-declarations
-      const updatedTask = action.payload;
+      const updatedTask: Task = action.payload;
       // eslint-disable-next-line no-case-declarations
       const newColumns =
         state.columns?.map((column) => {

@@ -162,6 +162,7 @@ const EditTaskModal: React.FC<Props> = ({
       setTitle(originalTask.title);
       setDescription(originalTask.description);
       setSubtasks(originalTask.subtasks);
+      setSubtaskInputErrors({});
       onClose();
     }
     onClose();
