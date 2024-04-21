@@ -1,5 +1,5 @@
 import { SortableContext } from "@dnd-kit/sortable";
-import { Column, Task } from "../models/board.model";
+import { Board, Column, Task } from "../models/board.model";
 import TaskCard from "./TaskCard";
 import Dialog from "./Dialog";
 import ViewTaskModal from "./modals/ViewTaskModal";
@@ -10,6 +10,7 @@ import {
   updateTask,
   setSelectedTask,
   setColumns,
+  setBoard,
 } from "../actions/boardActions";
 import EditTaskModal from "./modals/EditTaskModal";
 import DeleteModal from "./modals/DeleteModal";
@@ -40,6 +41,10 @@ const Columns: React.FC<Props> = ({ columns }) => {
   // const selectedTask = useSelector(
   //   (state: RootState) => state.board.selectedTask
   // );
+  const selectedBoard = useSelector(
+    (state: { boardReducer: { board: Board | null } }) =>
+      state.boardReducer.board
+  );
   const selectedTask = useSelector(
     (state: { boardReducer: { selectedTask: Task | null } }) =>
       state.boardReducer.selectedTask
@@ -99,7 +104,20 @@ const Columns: React.FC<Props> = ({ columns }) => {
         }
         return column;
       });
+
+      // Update the columns in the Redux store
       dispatch(setColumns(updatedColumns));
+
+      // Update the board with the updated columns
+      if (selectedBoard) {
+        const updatedBoard: Board = {
+          ...selectedBoard,
+          columns: updatedColumns,
+        };
+        console.log(updatedBoard);
+        dispatch(setBoard(updatedBoard));
+      }
+
       handleCloseModal();
     }
   };

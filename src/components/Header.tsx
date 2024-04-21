@@ -2,13 +2,14 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useDispatch, useSelector } from "react-redux";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { RootState } from "../store";
-import { Column, Board } from "../models/board.model";
+import { Board } from "../models/board.model";
 import { Menu, MenuItem } from "@mui/material";
 import { closeModal, openEditBoardModal } from "../actions/modalActions";
 import Dialog from "./Dialog";
 import EditBoardModal from "./modals/EditBoardModal";
+import { setBoard, setBoards, setColumns } from "../actions/boardActions";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -17,21 +18,25 @@ const Header = () => {
     (state: RootState) => state.modalReducer
   );
 
-  const selectedName = useSelector((state: RootState) => state.board.name);
+  // const selectedName = useSelector((state: RootState) => state.board.name);
   // const selectedColumns = useSelector(
   //   (state: RootState) => state.board.columns
   // );
+  const boards = useSelector(
+    (state: { boardReducer: { boards: Board[] } }) => state.boardReducer.boards
+  );
   const selectedBoard = useSelector(
     (state: { boardReducer: { board: Board | null } }) =>
-      state.boardReducer?.board
+      state.boardReducer.board
   );
-  const selectedColumns = useSelector(
-    (state: { boardReducer: { columns: Column[] | null } }) =>
-      state.boardReducer?.columns
-  );
-  const memoizedSelectedName = useMemo(() => selectedName, [selectedName]);
+  // const memoizedSelectedName = useMemo(() => selectedName, [selectedName]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // for popup menu
   const open = Boolean(anchorEl); // for popup menu
+
+  // useEffect(() => {
+  //   console.log(selectedBoard);
+  //   console.log(boards);
+  // }, [selectedBoard, boards]);
 
   // Menu for editing/deleting board
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -54,12 +59,27 @@ const Header = () => {
     dispatch(closeModal());
   };
 
+  const handleBoardUpdate = (updatedBoard: Board) => {
+    const newBoards = boards
+      ? boards.map((board) =>
+          board.id === updatedBoard.id ? updatedBoard : board
+        )
+      : [];
+    dispatch(setBoards(newBoards));
+    dispatch(setBoard(updatedBoard));
+    dispatch(setColumns(updatedBoard.columns));
+  };
+
   return (
     <>
       {/* EDIT BOARD DIALOG */}
       <Dialog isOpen={currentModal === "edit_board"}>
         {selectedBoard && (
-          <EditBoardModal onClose={handleCloseModal} board={selectedBoard} />
+          <EditBoardModal
+            onClose={handleCloseModal}
+            board={selectedBoard}
+            onSaveBoard={handleBoardUpdate}
+          />
         )}
       </Dialog>
       <div
@@ -72,10 +92,10 @@ const Header = () => {
             <p className="ml-2 plus-jakarta font-extrabold">ProjX</p>
           </div>
           <p className="plus-jakarta text-medium_gray font-semibold w-44">
-            {memoizedSelectedName}
+            {selectedBoard?.name}
           </p>
         </div>
-        {selectedColumns !== null && selectedColumns.length > 0 && (
+        {selectedBoard && (
           <div className="flex flex-row items-center gap-4">
             <button
               className="btn bg-primary_btn_idle border-none plus-jakarta text-white hover:bg-primary_btn_hover"

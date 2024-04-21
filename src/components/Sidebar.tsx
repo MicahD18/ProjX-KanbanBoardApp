@@ -3,16 +3,18 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import AddIcon from "@mui/icons-material/Add";
 
-import { boards } from "../data/data.json";
-
 // models
 import { Board, Column } from "../models/board.model";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setBoard, setColumns } from "../actions/boardActions";
 import { setName } from "../slices/boardSlice";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
+
+  const boards = useSelector(
+    (state: { boardReducer: { boards: Board[] } }) => state.boardReducer.boards
+  );
 
   // get the columns from the selected board
   const handleSelectBoard = (board: Board, columns: Column[], name: string) => {
