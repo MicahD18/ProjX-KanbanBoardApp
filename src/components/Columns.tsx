@@ -18,11 +18,13 @@ import {
   closeModal,
   openCreateModal,
   openDeleteModal,
+  openDeleteTaskModal,
   openEditModal,
   openViewModal,
 } from "../actions/modalActions";
 import { RootState } from "../store";
 import { useState } from "react";
+import DeleteTaskModal from "./modals/DeleteTaskModal";
 
 interface Props {
   columns: Column[] | null;
@@ -63,7 +65,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
   };
 
   const handleOpenDeleteModal = () => {
-    dispatch(openDeleteModal());
+    dispatch(openDeleteTaskModal());
   };
 
   const handleOpenCreateModal = (columnIndex: number) => {
@@ -73,6 +75,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
 
   const handleCloseModal = () => {
     dispatch(closeModal());
+    dispatch(setSelectedTask(null));
     setColumnIndex(0);
   };
 
@@ -148,10 +151,10 @@ const Columns: React.FC<Props> = ({ columns }) => {
         )}
       </Dialog>
       {/* DELETE TASK DIALOG */}
-      <Dialog isOpen={currentModal === "delete"}>
+      <Dialog isOpen={currentModal === "delete_task_modal"}>
         {selectedTask && (
-          <DeleteModal
-            item={selectedTask}
+          <DeleteTaskModal
+            task={selectedTask}
             onTaskDelete={handleTaskDelete}
             onClose={handleOpenViewModal}
           />

@@ -6,10 +6,16 @@ import { useEffect, useState } from "react";
 import { RootState } from "../store";
 import { Board } from "../models/board.model";
 import { Menu, MenuItem } from "@mui/material";
-import { closeModal, openEditBoardModal } from "../actions/modalActions";
+import {
+  closeModal,
+  openDeleteBoardModal,
+  openDeleteModal,
+  openEditBoardModal,
+} from "../actions/modalActions";
 import Dialog from "./Dialog";
 import EditBoardModal from "./modals/EditBoardModal";
 import { setBoard, setBoards, setColumns } from "../actions/boardActions";
+import DeleteModal from "./modals/DeleteModal";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -52,7 +58,7 @@ const Header = () => {
   };
 
   const handleOpenDeleteBoardModal = () => {
-    console.log("delete board...");
+    dispatch(openDeleteBoardModal());
   };
 
   const handleCloseModal = () => {
@@ -70,6 +76,15 @@ const Header = () => {
     dispatch(setColumns(updatedBoard.columns));
   };
 
+  const handleBoardDelete = (board: Board) => {
+    const updatedBoards = boards.filter((item) => item.id !== board.id);
+    console.log(updatedBoards);
+    dispatch(setBoards(updatedBoards));
+    dispatch(setBoard(null));
+    dispatch(setColumns(null));
+    handleCloseModal();
+  };
+
   return (
     <>
       {/* EDIT BOARD DIALOG */}
@@ -79,6 +94,16 @@ const Header = () => {
             onClose={handleCloseModal}
             board={selectedBoard}
             onSaveBoard={handleBoardUpdate}
+          />
+        )}
+      </Dialog>
+      {/* DELETE BOARD DIALOG */}
+      <Dialog isOpen={currentModal === "delete_board_modal"}>
+        {selectedBoard && (
+          <DeleteModal
+            board={selectedBoard}
+            onBoardDelete={handleBoardDelete}
+            onClose={handleCloseModal}
           />
         )}
       </Dialog>
