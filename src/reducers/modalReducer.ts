@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   CLOSE_MODAL,
+  CREATE_BOARD_MODAL,
   CREATE_MODAL,
   DELETE_BOARD_MODAL,
   DELETE_MODAL,
@@ -19,6 +20,7 @@ export type ModalState = {
     | "edit_board"
     | "delete_task_modal"
     | "delete_board_modal"
+    | "create_board"
     | null;
 };
 
@@ -45,6 +47,8 @@ export default function modalReducer(
       return { ...state, currentModal: "delete_board_modal" };
     case CREATE_MODAL:
       return { ...state, currentModal: "create" };
+    case CREATE_BOARD_MODAL:
+      return { ...state, currentModal: "create_board" };
     case EDIT_BOARD_MODAL:
       return { ...state, currentModal: "edit_board" };
     case CLOSE_MODAL:

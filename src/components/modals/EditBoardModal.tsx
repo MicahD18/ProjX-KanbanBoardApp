@@ -6,11 +6,17 @@ import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   onClose: () => void;
-  onSaveBoard: (updatedBoard: Board) => void;
-  board: Board;
+  onSaveBoard?: (updatedBoard: Board) => void;
+  onCreateBoard?: (newBoard: Board) => void;
+  board?: Board;
 }
 
-const EditBoardModal: React.FC<Props> = ({ onClose, board, onSaveBoard }) => {
+const EditBoardModal: React.FC<Props> = ({
+  onClose,
+  board,
+  onSaveBoard,
+  onCreateBoard,
+}) => {
   const [name, setName] = useState("");
   const [columns, setColumns] = useState<Column[]>([]);
   // State to track column input errors
@@ -22,9 +28,21 @@ const EditBoardModal: React.FC<Props> = ({ onClose, board, onSaveBoard }) => {
   const [originalBoard, setOriginalBoard] = useState<Board | null>(null);
 
   useEffect(() => {
-    setName(board.name);
-    setColumns(board.columns);
-    setOriginalBoard({ ...board });
+    if (board) {
+      setName(board.name);
+      setColumns(board.columns);
+      setOriginalBoard({ ...board });
+      return;
+    }
+    // Create new task object and bind the properties to the states for user input
+    const newBoard: Board = {
+      id: `board-${uuidv4()}`,
+      name: "",
+      columns: [],
+    };
+    setName(newBoard.name);
+    setColumns(newBoard.columns);
+    setOriginalBoard(null);
   }, [board]);
 
   const handleBoardNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,8 +102,35 @@ const EditBoardModal: React.FC<Props> = ({ onClose, board, onSaveBoard }) => {
       columns,
     };
 
-    onSaveBoard(updatedBoard);
+    if (onSaveBoard) {
+      onSaveBoard(updatedBoard);
+    }
+
     onClose();
+  };
+
+  const handleCreateBoard = () => {
+    const hasEmptyColumns = columns.some((column) => column.name.trim() === "");
+    if (hasEmptyColumns) {
+      columns.forEach((column, index) => {
+        setColumnInputErrors((prevErrors) => ({
+          ...prevErrors,
+          [index]: column.name.trim() === "" ? "Can't be empty" : "",
+        }));
+      });
+      return;
+    }
+
+    const newBoard: Board = {
+      id: `board-${uuidv4()}`,
+      name,
+      columns,
+    };
+
+    if (onCreateBoard) {
+      console.log(newBoard);
+      onCreateBoard(newBoard);
+    }
   };
 
   const handleCancel = () => {
@@ -102,7 +147,11 @@ const EditBoardModal: React.FC<Props> = ({ onClose, board, onSaveBoard }) => {
   return (
     <div>
       <div className="flex flex-row w-full justify-between">
-        <h3 className="font-bold text-lg text-black">Edit Board</h3>
+        {board ? (
+          <h3 className="font-bold text-lg text-black">Edit Board</h3>
+        ) : (
+          <h3 className="font-bold text-lg text-black">Add New Board</h3>
+        )}
       </div>
       <div className="form-group flex flex-col mt-4">
         <label htmlFor="title" className="mb-2">
@@ -152,20 +201,39 @@ const EditBoardModal: React.FC<Props> = ({ onClose, board, onSaveBoard }) => {
         <AddIcon />
         Add New Column
       </button>
-      <div className="modal-actions flex flex-row gap-3 items-center mt-8 justify-between">
-        <button
-          className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white h-12 hover:bg-primary_btn_hover w-52"
-          onClick={handleSaveBoard}
-        >
-          Save Changes
-        </button>
-        <button
-          className="btn button-secondary border-none w-52"
-          onClick={handleCancel}
-        >
-          Cancel
-        </button>
-      </div>
+      {board && (
+        <div className="modal-actions flex flex-row gap-3 items-center mt-8 justify-between">
+          <button
+            className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white h-12 hover:bg-primary_btn_hover w-52"
+            onClick={handleSaveBoard}
+          >
+            Save Changes
+          </button>
+          <button
+            className="btn button-secondary border-none w-52"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+      {!board && (
+        <div className="modal-actions flex flex-row gap-3 items-center mt-8 justify-between">
+          <button
+            className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white h-12 hover:bg-primary_btn_hover w-52"
+            onClick={handleCreateBoard}
+            disabled={name === ""}
+          >
+            Create New Board
+          </button>
+          <button
+            className="btn button-secondary border-none w-52"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
     </div>
   );
 };
