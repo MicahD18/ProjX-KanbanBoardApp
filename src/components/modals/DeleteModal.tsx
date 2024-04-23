@@ -1,18 +1,16 @@
 import { Board, Task } from "../../models/board.model";
 
 interface Props {
-  item: Task | Board;
+  task?: Task | null;
+  board?: Board | null;
   onTaskDelete?: (task: Task) => void;
   onBoardDelete?: (board: Board) => void;
   onClose: () => void;
 }
 
-function isTask(item: Task | Board): item is Task {
-  return (item as Task).title !== undefined;
-}
-
 const DeleteModal: React.FC<Props> = ({
-  item,
+  task,
+  board,
   onTaskDelete,
   onBoardDelete,
   onClose,
@@ -20,18 +18,18 @@ const DeleteModal: React.FC<Props> = ({
   return (
     <div>
       <p className="text-red-500 text-lg font-semibold">
-        {isTask(item) ? "Delete this task?" : "Delete this board?"}
+        {task ? "Delete this task?" : "Delete this board?"}
       </p>
       <div className="mt-4">
-        {isTask(item) ? (
+        {task ? (
           <p className="text-light_gray">
-            Are you sure you want to delete '{item.title}' task and its
+            Are you sure you want to delete '{task.title}' task and its
             subtasks? This action cannot be undone.
           </p>
         ) : (
           <p className="text-light_gray">
-            Are you sure you want to delete '{(item as Board).name}' board and
-            all its tasks? This action cannot be undone.
+            Are you sure you want to delete '{board?.name}'? This action will
+            remove all columns and tasks and cannot be undone.
           </p>
         )}
       </div>
@@ -40,11 +38,11 @@ const DeleteModal: React.FC<Props> = ({
         <button
           className="btn btn-sm lg:btn-md bg-red-500 border-none plus-jakarta text-white h-12 hover:bg-red-200 hover:text-red-500 w-52"
           onClick={() => {
-            if (isTask(item) && onTaskDelete) {
-              onTaskDelete(item);
+            if (task && onTaskDelete) {
+              onTaskDelete(task);
             }
-            if (onBoardDelete) {
-              onBoardDelete(item as Board);
+            if (onBoardDelete && board) {
+              onBoardDelete(board);
             }
           }}
         >

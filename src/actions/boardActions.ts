@@ -9,14 +9,14 @@ export const UPDATE_BOARD = "UPDATE_BOARD";
 export const SET_BOARDS = "SET_BOARDS";
 
 // 2. Create action with the type "SET_COLUMNS" and data payload
-export const setColumns = (columns: Column[]) => {
+export const setColumns = (columns: Column[] | null) => {
   return {
     type: SET_COLUMNS,
     payload: columns,
   };
 };
 
-export const setBoard = (board: Board) => {
+export const setBoard = (board: Board | null) => {
   return {
     type: SET_BOARD,
     payload: board,
