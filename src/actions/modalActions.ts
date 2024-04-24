@@ -6,6 +6,7 @@ export const DELETE_MODAL = "DELETE_MODAL";
 export const DELETE_TASK_MODAL = "DELETE_TASK_MODAL";
 // NEW:
 export const DELETE_BOARD_MODAL = "DELETE_BOARD_MODAL";
+export const CREATE_BOARD_MODAL = "CREATE_BOARD_MODAL";
 export const CREATE_MODAL = "CREATE_MODAL";
 // BOARDS
 export const EDIT_BOARD_MODAL = "EDIT_BOARD_MODAL";
@@ -46,6 +47,12 @@ export const openDeleteBoardModal = () => {
 export const openCreateModal = () => {
   return {
     type: CREATE_MODAL,
+  };
+};
+
+export const openCreateBoardModal = () => {
+  return {
+    type: CREATE_BOARD_MODAL,
   };
 };
 
