@@ -11,6 +11,7 @@ import {
   setSelectedTask,
   setColumns,
   setBoard,
+  setBoards,
 } from "../actions/boardActions";
 import EditTaskModal from "./modals/EditTaskModal";
 import DeleteModal from "./modals/DeleteModal";
@@ -39,6 +40,9 @@ const Columns: React.FC<Props> = ({ columns }) => {
   // State that handles the modals
   const { currentModal } = useSelector(
     (state: RootState) => state.modalReducer
+  );
+  const boards = useSelector(
+    (state: { boardReducer: { boards: Board[] } }) => state.boardReducer.boards
   );
   // const selectedTask = useSelector(
   //   (state: RootState) => state.board.selectedTask
@@ -113,12 +117,25 @@ const Columns: React.FC<Props> = ({ columns }) => {
 
       // Update the board with the updated columns
       if (selectedBoard) {
+        // create a copy of boards to avoid state mutation
+        const boardsCopy = [...boards];
         const updatedBoard: Board = {
           ...selectedBoard,
           columns: updatedColumns,
         };
-        console.log(updatedBoard);
         dispatch(setBoard(updatedBoard));
+        // TODO: update the boards array with the updatedBoard
+        const boardIndex = boardsCopy.findIndex(
+          (board) => board.id === updatedBoard.id
+        );
+        // Replace old board with the new board
+        const updatedBoards = [
+          ...boardsCopy.slice(0, boardIndex),
+          updatedBoard,
+          ...boardsCopy.slice(boardIndex + 1),
+        ];
+        // call the setBoards action to set the global state of the boards
+        dispatch(setBoards(updatedBoards));
       }
 
       handleCloseModal();

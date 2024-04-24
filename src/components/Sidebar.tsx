@@ -38,7 +38,7 @@ const Sidebar = () => {
 
   const handleBoardCreate = (newBoard: Board) => {
     const updatedBoards = [...boards, newBoard];
-    console.log(updatedBoards);
+
     dispatch(setBoards(updatedBoards));
     handleCloseModal();
   };

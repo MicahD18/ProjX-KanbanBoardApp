@@ -128,7 +128,6 @@ const EditBoardModal: React.FC<Props> = ({
     };
 
     if (onCreateBoard) {
-      console.log(newBoard);
       onCreateBoard(newBoard);
     }
   };
