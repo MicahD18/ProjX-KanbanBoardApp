@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MainNav from "../components/MainNav";
 import { useMemo, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
@@ -23,9 +23,11 @@ import {
 import TaskCard from "../components/TaskCard";
 import Columns from "../components/Columns";
 // import { RootState } from "../store";
-import { Column } from "../models/board.model";
+import { Board, Column } from "../models/board.model";
+import { updateBoardWithColumns } from "../utils/boardUtils";
 
 const BoardPage = () => {
+  const dispatch = useDispatch();
   // TODO: NOTE: Changes in state for subtasks don't work when using the boardReducer, however it DOES work when using boardSlice.
   // TODO: NOTE: When using boardSlice, the app crashes when using the drag and drop feature, however it DOES work when using boardReducer. (Fix this later)
   // 4. Use the useSelector hook to get the state.setSelectedBoard object,
@@ -44,6 +46,13 @@ const BoardPage = () => {
   const memoizedSelectedColumns = useMemo(
     () => selectedColumns,
     [selectedColumns]
+  );
+  const boards = useSelector(
+    (state: { boardReducer: { boards: Board[] } }) => state.boardReducer.boards
+  );
+  const selectedBoard = useSelector(
+    (state: { boardReducer: { board: Board | null } }) =>
+      state.boardReducer.board
   );
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -185,8 +194,14 @@ const BoardPage = () => {
       active.id !== over.id
     ) {
       // Create a copy of the columns
+      // const newColumns = memoizedSelectedColumns
+      //   ? memoizedSelectedColumns.map((column) => ({ ...column }))
+      //   : [];
       const newColumns = memoizedSelectedColumns
-        ? memoizedSelectedColumns.map((column) => ({ ...column }))
+        ? memoizedSelectedColumns.map((column) => ({
+            ...column,
+            tasks: [...column.tasks], // Create a new tasks array
+          }))
         : [];
 
       // Find the active and over container
@@ -219,12 +234,30 @@ const BoardPage = () => {
           activeItemIndex,
           overItemIndex
         );
+
+        // TODO: GET DRAG AND DROP FEATURE TO WORK WITH LOCALSTORAGE
+        // Update the board with the updated columns
+        // updateBoardWithColumns(dispatch, boards, selectedBoard, newColumns);
       } else {
-        const [removedItem] = newColumns[activeColumnIndex].tasks.splice(
-          activeItemIndex,
-          1
-        );
-        newColumns[overColumnIndex].tasks.splice(overItemIndex, 0, removedItem);
+        // Create a new tasks array for the active column
+        const newActiveTasks = [
+          ...newColumns[activeColumnIndex].tasks.slice(0, activeItemIndex),
+          ...newColumns[activeColumnIndex].tasks.slice(activeItemIndex + 1),
+        ];
+
+        // Create a new tasks array for the over column with the moved item
+        const newOverTasks = [
+          ...newColumns[overColumnIndex].tasks.slice(0, overItemIndex),
+          newColumns[activeColumnIndex].tasks[activeItemIndex],
+          ...newColumns[overColumnIndex].tasks.slice(overItemIndex),
+        ];
+
+        // Update the newColumns array with the new tasks arrays
+        newColumns[activeColumnIndex].tasks = newActiveTasks;
+        newColumns[overColumnIndex].tasks = newOverTasks;
+
+        // Update the board with the updated columns
+        updateBoardWithColumns(dispatch, boards, selectedBoard, newColumns);
       }
     }
 
@@ -265,6 +298,9 @@ const BoardPage = () => {
         1
       );
       newColumns[overColumnIndex].tasks.push(removedItem);
+
+      // Update the board with the updated columns
+      updateBoardWithColumns(dispatch, boards, selectedBoard, newColumns);
     }
 
     // Clear the activeId state

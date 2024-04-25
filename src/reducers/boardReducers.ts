@@ -9,8 +9,12 @@ import {
   SET_BOARDS,
 } from "../actions/boardActions";
 import { boards } from "../data/data.json";
+import { loadFromLocalStorage } from "../utils/localStorage";
 
-const boardsData = [...boards];
+// const boardsData = [...boards];
+
+// Load boards from localStorage
+const boardsData = loadFromLocalStorage("boards");
 
 interface State {
   selectedBoard: Board | null;

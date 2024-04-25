@@ -16,6 +16,7 @@ import Dialog from "./Dialog";
 import EditBoardModal from "./modals/EditBoardModal";
 import { setBoard, setBoards, setColumns } from "../actions/boardActions";
 import DeleteModal from "./modals/DeleteModal";
+import { saveToLocalStorage } from "../utils/localStorage";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -66,12 +67,14 @@ const Header = () => {
   };
 
   const handleBoardUpdate = (updatedBoard: Board) => {
-    const newBoards = boards
+    const updatedBoards = boards
       ? boards.map((board) =>
           board.id === updatedBoard.id ? updatedBoard : board
         )
       : [];
-    dispatch(setBoards(newBoards));
+    // save the updated boards array to local storage
+    saveToLocalStorage("boards", updatedBoards);
+    dispatch(setBoards(updatedBoards));
     dispatch(setBoard(updatedBoard));
     dispatch(setColumns(updatedBoard.columns));
   };
@@ -80,6 +83,10 @@ const Header = () => {
     const updatedBoards = boards.filter((item) => item.id !== board.id);
     console.log(updatedBoards);
     dispatch(setBoards(updatedBoards));
+
+    // save the updated boards array to local storage
+    saveToLocalStorage("boards", updatedBoards);
+
     dispatch(setBoard(null));
     dispatch(setColumns(null));
     handleCloseModal();
