@@ -2,14 +2,13 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { RootState } from "../store";
 import { Board } from "../models/board.model";
 import { Menu, MenuItem } from "@mui/material";
 import {
   closeModal,
   openDeleteBoardModal,
-  openDeleteModal,
   openEditBoardModal,
 } from "../actions/modalActions";
 import Dialog from "./Dialog";
