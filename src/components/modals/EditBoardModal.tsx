@@ -144,7 +144,7 @@ const EditBoardModal: React.FC<Props> = ({
   };
 
   return (
-    <div>
+    <div className="plus-jakarta">
       <div className="flex flex-row w-full justify-between">
         {board ? (
           <h3 className="font-bold text-lg text-black">Edit Board</h3>

@@ -169,7 +169,7 @@ const EditTaskModal: React.FC<Props> = ({
   };
 
   return (
-    <>
+    <div className="plus-jakarta">
       <div className="flex flex-row w-full justify-between">
         {task ? (
           <h3 className="font-bold text-lg text-black">Edit Task</h3>
@@ -178,7 +178,7 @@ const EditTaskModal: React.FC<Props> = ({
         )}
       </div>
       <div className="form-group flex flex-col mt-4">
-        <label htmlFor="title" className="mb-2">
+        <label htmlFor="title" className="mb-2 text-gray-500">
           Title
         </label>
         <input
@@ -190,7 +190,7 @@ const EditTaskModal: React.FC<Props> = ({
         />
       </div>
       <div className="form-group flex flex-col mt-4">
-        <label htmlFor="description" className="mb-2">
+        <label htmlFor="description" className="mb-2 text-gray-500">
           Description
         </label>
         <textarea
@@ -200,7 +200,7 @@ const EditTaskModal: React.FC<Props> = ({
           className="textarea textarea-bordered bg-white border-gray-200 border-2 text-black focus:border-primary_btn_idle"
         />
       </div>
-      <p className="mt-4">Subtasks</p>
+      <p className="mt-4 text-gray-500">Subtasks</p>
       <div className="flex flex-col gap-3 my-2">
         {subtasks.map((subtask, index) => (
           <div
@@ -270,7 +270,7 @@ const EditTaskModal: React.FC<Props> = ({
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

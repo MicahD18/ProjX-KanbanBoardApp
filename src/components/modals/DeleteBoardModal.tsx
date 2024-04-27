@@ -12,7 +12,7 @@ const DeleteBoardModal: React.FC<Props> = ({
   onClose,
 }) => {
   return (
-    <div>
+    <div className="plus-jakarta">
       <p className="text-red-500 text-lg font-semibold">Delete this board?</p>
       <div className="mt-4">
         <p className="text-light_gray">

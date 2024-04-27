@@ -13,6 +13,8 @@ import EditBoardModal from "./modals/EditBoardModal";
 import { RootState } from "../store";
 import { closeModal, openCreateBoardModal } from "../actions/modalActions";
 import { saveToLocalStorage } from "../utils/localStorage";
+import { useState } from "react";
+import { UniqueIdentifier } from "@dnd-kit/core";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -25,8 +27,13 @@ const Sidebar = () => {
     (state: { boardReducer: { boards: Board[] } }) => state.boardReducer.boards
   );
 
+  const [boardIndex, setBoardIndex] = useState<UniqueIdentifier | null>(null);
+
   // get the columns from the selected board
   const handleSelectBoard = (board: Board, columns: Column[], name: string) => {
+    // set board index to set style of the selected board
+    setBoardIndex(board.id);
+
     // 1. dispatch the setColumns action with the selected board data
     dispatch(setColumns(columns)); // columns -> BoardsPage component
     dispatch(setName(name)); // name -> Header component
@@ -69,17 +76,21 @@ const Sidebar = () => {
             <p className="ml-2 plus-jakarta font-extrabold">ProjX</p>
           </div>
           <div className="mt-4">
-            <p className="plus-jakarta font-semibold text-xs tracking-widest text-light_gray">
+            <p className="plus-jakarta font-semibold text-sm tracking-widest text-light_gray">
               ALL BOARDS ({boards.length})
             </p>
-            <div className="flex flex-col gap-3 mt-6">
+            <div className="flex flex-col mt-6">
               {boards.map((board: Board) => (
                 <button
                   key={board.id}
                   onClick={() =>
                     handleSelectBoard(board, board.columns, board.name)
                   }
-                  className="py-2 text-medium_gray font-semibold flex flex-row gap-2 cursor-pointer px-2 hover:bg-primary_btn_hover hover:text-white rounded-md transition duration-300"
+                  className={`py-4 text-medium_gray font-semibold flex flex-row gap-2 cursor-pointer px-2 ${
+                    board.id === boardIndex
+                      ? "bg-primary_btn_idle text-white"
+                      : "bg-none"
+                  } hover:bg-[#f0effa] hover:text-primary_btn_idle rounded-md transition duration-300`}
                 >
                   <SpaceDashboardIcon />
                   {/* MAX LENGTH: 24 Characters */}
@@ -89,7 +100,7 @@ const Sidebar = () => {
             </div>
             <button
               onClick={handleOpenCreateBoardModal}
-              className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white mt-6 h-12 hover:bg-primary_btn_hover"
+              className="btn btn-sm lg:btn-md bg-transparent text-primary_btn_idle border-none plus-jakarta mt-6 h-12 hover:bg-transparent"
             >
               <AddIcon />
               Create New Board

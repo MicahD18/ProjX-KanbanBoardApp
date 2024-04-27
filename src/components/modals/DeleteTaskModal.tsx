@@ -8,7 +8,7 @@ interface Props {
 
 const DeleteTaskModal: React.FC<Props> = ({ task, onTaskDelete, onClose }) => {
   return (
-    <div>
+    <div className="plus-jakarta">
       <p className="text-red-500 text-lg font-semibold">Delete this task?</p>
       <div className="mt-4">
         <p className="text-light_gray">

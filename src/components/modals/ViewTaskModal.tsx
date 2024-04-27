@@ -58,9 +58,9 @@ const ViewTaskModal: React.FC<Props> = ({
   };
 
   return (
-    <>
+    <div className="plus-jakarta">
       <div className="flex flex-row w-full justify-between">
-        <h3 className="font-bold text-lg text-black">{task?.title}</h3>
+        <h3 className="font-bold text-xl text-black">{task?.title}</h3>
         <button onClick={handleMenuOpen}>
           <MoreVertIcon />
         </button>
@@ -93,15 +93,17 @@ const ViewTaskModal: React.FC<Props> = ({
 
       {task?.subtasks?.map((subtask, index) => (
         <div key={subtask.id} className="form-control">
-          <label className="label cursor-pointer">
+          <div className="flex flex-row justify-start items-center mt-4">
             <input
               type="checkbox"
               checked={subtask.isCompleted}
-              className="checkbox checkbox-primary"
+              className="checkbox checkbox-primary cursor-pointer"
               onChange={(e) => handleSubtaskCheck(index, e.target.checked)}
             />
-            <span className="label-text">{subtask.title}</span>
-          </label>
+            <span className="label-text text-[16px] ml-4 text-black font-semibold">
+              {subtask.title}
+            </span>
+          </div>
         </div>
       ))}
       <div className="modal-action">
@@ -112,7 +114,7 @@ const ViewTaskModal: React.FC<Props> = ({
           Close
         </button>
       </div>
-    </>
+    </div>
   );
 };
 
