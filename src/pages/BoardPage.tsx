@@ -330,7 +330,7 @@ const BoardPage = () => {
   }
 
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row plus-jakarta">
       <MainNav />
       <div
         className="flex flex-row h-[93vh] w-full bg-cool_gray overflow-x-scroll"

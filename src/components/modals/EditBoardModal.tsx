@@ -147,13 +147,13 @@ const EditBoardModal: React.FC<Props> = ({
     <div className="plus-jakarta">
       <div className="flex flex-row w-full justify-between">
         {board ? (
-          <h3 className="font-bold text-lg text-black">Edit Board</h3>
+          <h3 className="font-bold text-xl text-black">Edit Board</h3>
         ) : (
-          <h3 className="font-bold text-lg text-black">Add New Board</h3>
+          <h3 className="font-bold text-xl text-black">Add New Board</h3>
         )}
       </div>
       <div className="form-group flex flex-col mt-4">
-        <label htmlFor="title" className="mb-2">
+        <label htmlFor="title" className="mb-2 text-gray-500">
           Board Name
         </label>
         <input
@@ -164,7 +164,7 @@ const EditBoardModal: React.FC<Props> = ({
           className="input input-bordered bg-white border-gray-200 border-2 text-black focus:border-primary_btn_idle"
         />
       </div>
-      <p className="mt-4">Board Columns</p>
+      <p className="mt-4 text-gray-500">Board Columns</p>
       <div className="flex flex-col gap-3 my-2">
         {columns.map((column, index) => (
           <div

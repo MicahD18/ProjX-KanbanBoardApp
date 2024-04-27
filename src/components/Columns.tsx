@@ -205,7 +205,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
           {/* top-part of container/column */}
           <div className="flex flex-row items-center gap-2">
             <div className="w-4 h-4 bg-primary_btn_idle rounded-xl"></div>
-            <p>
+            <p className="tracking-wider text-gray-600 font-semibold ml-2 text-sm">
               {column.name.toLocaleUpperCase()} ({column.tasks.length})
             </p>
           </div>

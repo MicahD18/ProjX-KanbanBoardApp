@@ -58,7 +58,7 @@ const Sidebar = () => {
   };
 
   return (
-    <>
+    <div className="plus-jakarta">
       {/* EDIT BOARD DIALOG */}
       <Dialog isOpen={currentModal === "create_board"}>
         <EditBoardModal
@@ -76,7 +76,7 @@ const Sidebar = () => {
             <p className="ml-2 plus-jakarta font-extrabold">ProjX</p>
           </div>
           <div className="mt-4">
-            <p className="plus-jakarta font-semibold text-sm tracking-widest text-light_gray">
+            <p className="plus-jakarta font-semibold text-xs tracking-widest text-light_gray">
               ALL BOARDS ({boards.length})
             </p>
             <div className="flex flex-col mt-6">
@@ -108,7 +108,7 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
