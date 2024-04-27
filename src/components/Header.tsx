@@ -127,7 +127,7 @@ const Header = () => {
           </p>
         </div>
         {selectedBoard && (
-          <div className="flex flex-row items-center gap-4">
+          <div className="flex flex-row items-center gap-4 invisible sm:visible">
             <button
               className="btn bg-primary_btn_idle border-none plus-jakarta text-white hover:bg-primary_btn_hover"
               onClick={handleOpenEditBoardModal}

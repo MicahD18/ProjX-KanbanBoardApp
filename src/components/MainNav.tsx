@@ -5,7 +5,7 @@ const MainNav = () => {
   return (
     <div
       role="navigation"
-      className="min-w-[325px] bg-white border-solid border-r-2 border-slate-300"
+      className="w-[30%] sm:min-w-[325px] bg-white border-solid border-r-2 border-slate-300"
     ></div>
   );
 };

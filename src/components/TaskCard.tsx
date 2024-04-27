@@ -2,6 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { Task } from "../models/board.model";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
 interface Props {
   id: UniqueIdentifier;
@@ -38,17 +39,22 @@ const TaskCard: React.FC<Props> = ({ id, task, handleOpenModal }) => {
       }}
     >
       <div className="card-body">
-        <p
-          className="card-title text-black text-sm transition duration-150 hover:text-gray-400"
-          onClick={handleClick}
-        >
-          {task?.title}
-        </p>
+        <div className="flex flex-row">
+          <p
+            className="card-title text-black text-sm transition duration-150 hover:text-gray-400"
+            onClick={handleClick}
+          >
+            {task?.title}
+          </p>
+          <button {...listeners}>
+            <DragIndicatorIcon />
+          </button>
+        </div>
+
         {task !== null &&
           task?.subtasks !== null &&
           task.subtasks.length > 0 && <p>{task?.subtasks.length} subtasks</p>}
       </div>
-      <button {...listeners}>Drag</button>
     </div>
   );
 };

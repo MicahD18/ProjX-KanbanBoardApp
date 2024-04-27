@@ -68,7 +68,7 @@ const Sidebar = () => {
       </Dialog>
       <div
         role="navigation"
-        className="w-[325px] bg-white h-screen top-0 border-solid absolute border-r-2 border-slate-300"
+        className="w-[30%] sm:w-[325px] bg-white h-screen top-0 border-solid absolute border-r-2 border-slate-300"
       >
         <div className="flex flex-col px-8">
           <div className="flex flex-row py-7 text-[#635FC7] text-xl items-center">
@@ -86,7 +86,7 @@ const Sidebar = () => {
                   onClick={() =>
                     handleSelectBoard(board, board.columns, board.name)
                   }
-                  className={`py-4 text-medium_gray font-semibold flex flex-row gap-2 cursor-pointer px-2 ${
+                  className={`py-4 text-medium_gray font-semibold flex flex-row gap-2 cursor-pointer px-2 items-center ${
                     board.id === boardIndex
                       ? "bg-primary_btn_idle text-white"
                       : "bg-none"
@@ -94,7 +94,7 @@ const Sidebar = () => {
                 >
                   <SpaceDashboardIcon />
                   {/* MAX LENGTH: 24 Characters */}
-                  <p>{board.name}</p>
+                  <p className="text-sm">{board.name}</p>
                 </button>
               ))}
             </div>
