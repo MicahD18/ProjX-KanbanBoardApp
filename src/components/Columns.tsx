@@ -6,19 +6,11 @@ import ViewTaskModal from "./modals/ViewTaskModal";
 import { useDispatch, useSelector } from "react-redux";
 // import { setSelectedTask } from "../slices/boardSlice";
 // import { RootState } from "../store";
-import {
-  updateTask,
-  setSelectedTask,
-  setColumns,
-  setBoard,
-  setBoards,
-} from "../actions/boardActions";
+import { setSelectedTask, setColumns } from "../actions/boardActions";
 import EditTaskModal from "./modals/EditTaskModal";
-import DeleteModal from "./modals/DeleteModal";
 import {
   closeModal,
   openCreateModal,
-  openDeleteModal,
   openDeleteTaskModal,
   openEditModal,
   openViewModal,
@@ -26,6 +18,7 @@ import {
 import { RootState } from "../store";
 import { useState } from "react";
 import DeleteTaskModal from "./modals/DeleteTaskModal";
+import { updateBoardWithColumns } from "../utils/boardUtils";
 
 interface Props {
   columns: Column[] | null;
@@ -85,19 +78,59 @@ const Columns: React.FC<Props> = ({ columns }) => {
 
   // handle task deletion:
   const handleTaskDelete = (task: Task) => {
-    const updatedColumns = columns?.map((column) => ({
-      ...column,
-      tasks: column.tasks.filter((t) => t.id !== task.id),
-    }));
+    if (columns) {
+      const updatedColumns = columns.map((column) => ({
+        ...column,
+        tasks: column.tasks.filter((t) => t.id !== task.id),
+      }));
 
-    if (updatedColumns) {
+      // Update the columns in the Redux store
       dispatch(setColumns(updatedColumns));
+
+      // Update the board with the updated columns
+      updateBoardWithColumns(dispatch, boards, selectedBoard, updatedColumns);
+
       handleCloseModal();
     }
   };
 
   const handleTaskUpdate = (updatedTask: Task) => {
-    dispatch(updateTask(updatedTask));
+    // dispatch(updateTask(updatedTask));
+    // console.log(boards);
+    if (columns) {
+      const updatedColumns = columns.map((column) => {
+        // Find the column that contains the task we want to update
+        const taskIndex = column.tasks.findIndex(
+          (t) => t.id === updatedTask.id
+        );
+
+        if (taskIndex !== -1) {
+          // If the task is found in this column, create a new tasks array
+          // with the updated task replacing the old one
+          const updatedTasks = [
+            ...column.tasks.slice(0, taskIndex),
+            updatedTask,
+            ...column.tasks.slice(taskIndex + 1),
+          ];
+
+          // Return the updated column with the new tasks array
+          return {
+            ...column,
+            tasks: updatedTasks,
+          };
+        }
+        // If the task is not in this column, return the column unchanged
+        return column;
+      });
+
+      // Update the columns in the Redux store
+      dispatch(setColumns(updatedColumns));
+      // Update the selectedTask in the Redux store
+      dispatch(setSelectedTask(updatedTask));
+
+      // Update the board with the updated columns
+      updateBoardWithColumns(dispatch, boards, selectedBoard, updatedColumns);
+    }
   };
 
   const handleTaskCreate = (newTask: Task) => {
@@ -116,27 +149,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
       dispatch(setColumns(updatedColumns));
 
       // Update the board with the updated columns
-      if (selectedBoard) {
-        // create a copy of boards to avoid state mutation
-        const boardsCopy = [...boards];
-        const updatedBoard: Board = {
-          ...selectedBoard,
-          columns: updatedColumns,
-        };
-        dispatch(setBoard(updatedBoard));
-        // TODO: update the boards array with the updatedBoard
-        const boardIndex = boardsCopy.findIndex(
-          (board) => board.id === updatedBoard.id
-        );
-        // Replace old board with the new board
-        const updatedBoards = [
-          ...boardsCopy.slice(0, boardIndex),
-          updatedBoard,
-          ...boardsCopy.slice(boardIndex + 1),
-        ];
-        // call the setBoards action to set the global state of the boards
-        dispatch(setBoards(updatedBoards));
-      }
+      updateBoardWithColumns(dispatch, boards, selectedBoard, updatedColumns);
 
       handleCloseModal();
     }
@@ -191,7 +204,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
         <div key={column.id} className="w-80 my-12">
           {/* top-part of container/column */}
           <div className="flex flex-row items-center gap-2">
-            <div className="w-4 h-4 bg-blue-500 rounded-xl"></div>
+            <div className="w-4 h-4 bg-primary_btn_idle rounded-xl"></div>
             <p>
               {column.name.toLocaleUpperCase()} ({column.tasks.length})
             </p>

@@ -8,9 +8,17 @@ import {
   SET_BOARD,
   SET_BOARDS,
 } from "../actions/boardActions";
+import { loadFromLocalStorage } from "../utils/localStorage";
 import { boards } from "../data/data.json";
 
-const boardsData = [...boards];
+// const boardsData = [...boards];
+
+// Load boards from localStorage
+
+const boardsData = loadFromLocalStorage("boards") || [];
+
+// FOR TESTING:
+// localStorage.removeItem("boards");
 
 interface State {
   selectedBoard: Board | null;

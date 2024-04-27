@@ -12,6 +12,7 @@ import Dialog from "./Dialog";
 import EditBoardModal from "./modals/EditBoardModal";
 import { RootState } from "../store";
 import { closeModal, openCreateBoardModal } from "../actions/modalActions";
+import { saveToLocalStorage } from "../utils/localStorage";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -40,6 +41,8 @@ const Sidebar = () => {
     const updatedBoards = [...boards, newBoard];
 
     dispatch(setBoards(updatedBoards));
+    // save the updated boards array to local storage
+    saveToLocalStorage("boards", updatedBoards);
     handleCloseModal();
   };
 

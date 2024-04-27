@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import MainNav from "../components/MainNav";
 import { useMemo, useState } from "react";
-import AddIcon from "@mui/icons-material/Add";
 import {
   DndContext,
   DragEndEvent,
@@ -22,8 +21,8 @@ import {
 } from "@dnd-kit/sortable";
 import TaskCard from "../components/TaskCard";
 import Columns from "../components/Columns";
-// import { RootState } from "../store";
-import { Column } from "../models/board.model";
+import { Board, Column } from "../models/board.model";
+import { saveToLocalStorage } from "../utils/localStorage";
 
 const BoardPage = () => {
   // TODO: NOTE: Changes in state for subtasks don't work when using the boardReducer, however it DOES work when using boardSlice.
@@ -45,6 +44,9 @@ const BoardPage = () => {
     () => selectedColumns,
     [selectedColumns]
   );
+  const boards = useSelector(
+    (state: { boardReducer: { boards: Board[] } }) => state.boardReducer.boards
+  );
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 
@@ -54,6 +56,13 @@ const BoardPage = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  const newColumns = memoizedSelectedColumns
+    ? memoizedSelectedColumns.map((column) => ({
+        ...column,
+        tasks: [...column.tasks],
+      }))
+    : [];
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
@@ -83,11 +92,6 @@ const BoardPage = () => {
       over &&
       active.id !== over.id
     ) {
-      // Create a copy of the columns
-      const newColumns = memoizedSelectedColumns
-        ? memoizedSelectedColumns.map((column) => ({ ...column }))
-        : [];
-
       // Find the active container and over container (tasks)
       const activeContainer = findValueOfItems(active.id, "item");
       const overContainer = findValueOfItems(over.id, "item");
@@ -139,11 +143,6 @@ const BoardPage = () => {
       over &&
       active.id !== over.id
     ) {
-      // Create a copy of the columns
-      const newColumns = memoizedSelectedColumns
-        ? memoizedSelectedColumns.map((column) => ({ ...column }))
-        : [];
-
       // Find the active and over container
       const activeContainer = findValueOfItems(active.id, "item");
       const overContainer = findValueOfItems(over.id, "container");
@@ -176,6 +175,9 @@ const BoardPage = () => {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
+    // Create a new copy of boards
+    const updatedBoards = [...boards];
+
     // Handling Item Sorting
     if (
       active.id.toString().includes("item") &&
@@ -184,11 +186,6 @@ const BoardPage = () => {
       over &&
       active.id !== over.id
     ) {
-      // Create a copy of the columns
-      const newColumns = memoizedSelectedColumns
-        ? memoizedSelectedColumns.map((column) => ({ ...column }))
-        : [];
-
       // Find the active and over container
       const activeContainer = findValueOfItems(active.id, "item");
       const overContainer = findValueOfItems(over.id, "item");
@@ -214,17 +211,38 @@ const BoardPage = () => {
 
       // If the active and over columns are the same
       if (activeColumnIndex === overColumnIndex) {
-        newColumns[activeColumnIndex].tasks = arrayMove(
-          newColumns[activeColumnIndex].tasks,
+        // Update the tasks array without mutating the state
+        updatedBoards[0].columns[activeColumnIndex].tasks = arrayMove(
+          updatedBoards[0].columns[activeColumnIndex].tasks,
           activeItemIndex,
           overItemIndex
         );
       } else {
-        const [removedItem] = newColumns[activeColumnIndex].tasks.splice(
-          activeItemIndex,
-          1
-        );
-        newColumns[overColumnIndex].tasks.splice(overItemIndex, 0, removedItem);
+        const newActiveTasks = [
+          ...updatedBoards[0].columns[activeColumnIndex].tasks.slice(
+            0,
+            activeItemIndex
+          ),
+          ...updatedBoards[0].columns[activeColumnIndex].tasks.slice(
+            activeItemIndex + 1
+          ),
+        ];
+
+        // Create a new tasks array for the over column with the moved item
+        const newOverTasks = [
+          ...updatedBoards[0].columns[overColumnIndex].tasks.slice(
+            0,
+            overItemIndex
+          ),
+          updatedBoards[0].columns[activeColumnIndex].tasks[activeItemIndex],
+          ...updatedBoards[0].columns[overColumnIndex].tasks.slice(
+            overItemIndex
+          ),
+        ];
+
+        // Update the tasks arrays without mutating the state
+        updatedBoards[0].columns[activeColumnIndex].tasks = newActiveTasks;
+        updatedBoards[0].columns[overColumnIndex].tasks = newOverTasks;
       }
     }
 
@@ -236,11 +254,6 @@ const BoardPage = () => {
       over &&
       active.id !== over.id
     ) {
-      // Create a copy of the columns
-      const newColumns = memoizedSelectedColumns
-        ? memoizedSelectedColumns.map((column) => ({ ...column }))
-        : [];
-
       // Find the active and over container
       const activeContainer = findValueOfItems(active.id, "item");
       const overContainer = findValueOfItems(over.id, "container");
@@ -266,6 +279,8 @@ const BoardPage = () => {
       );
       newColumns[overColumnIndex].tasks.push(removedItem);
     }
+
+    saveToLocalStorage("boards", updatedBoards);
 
     // Clear the activeId state
     setActiveId(null);
