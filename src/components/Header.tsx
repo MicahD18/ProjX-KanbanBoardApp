@@ -35,6 +35,7 @@ const Header = () => {
     (state: { boardReducer: { board: Board | null } }) =>
       state.boardReducer.board
   );
+  const sidebar = useSelector((state: RootState) => state.sidebarReducer);
   // const memoizedSelectedName = useMemo(() => selectedName, [selectedName]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // for popup menu
   const open = Boolean(anchorEl); // for popup menu
@@ -115,25 +116,31 @@ const Header = () => {
       </Dialog>
       <div
         role="header"
-        className="w-full bg-white h-20 flex flex-row justify-between items-center px-2 pl-4 md:pl-20"
+        className="w-full bg-white h-20 flex flex-row justify-between items-center px-2 pl-4 md:pl-8"
       >
-        <div className="flex flex-row w-[450px] justify-between">
+        <div
+          className={`flex flex-row justify-start sm:justify-between items-center mt-1 w-full ${
+            sidebar.currentState === true ? "sm:w-[450px]" : "sm:w-[250px]"
+          }`}
+        >
           <div className="flex flex-row text-[#635FC7] text-xl items-center">
             <DashboardIcon />
-            <p className="ml-2 plus-jakarta font-extrabold">ProjX</p>
+            <p className="ml-2 plus-jakarta font-extrabold hidden sm:block">
+              ProjX
+            </p>
           </div>
-          <p className="plus-jakarta text-medium_gray font-semibold w-44">
+          <p className="plus-jakarta text-medium_gray font-semibold ml-4 pr-8 sm:ml-0">
             {selectedBoard?.name}
           </p>
         </div>
         {selectedBoard && (
-          <div className="flex flex-row items-center gap-4 invisible sm:visible">
+          <div className="flex flex-row items-center gap-4">
             <button
-              className="btn bg-primary_btn_idle border-none plus-jakarta text-white hover:bg-primary_btn_hover"
+              className="btn bg-primary_btn_idle border-none plus-jakarta text-white hover:bg-primary_btn_hover btn-sm sm:btn-md"
               onClick={handleOpenEditBoardModal}
             >
               <AddIcon />
-              Add New Column
+              <p className="hidden sm:block">Add New Column</p>
             </button>
             <button
               className="btn bg-transparent border-none text-medium_gray hover:text-white hover:bg-primary_btn_hover"

@@ -9,7 +9,6 @@ import {
   SET_BOARDS,
 } from "../actions/boardActions";
 import { loadFromLocalStorage } from "../utils/localStorage";
-import { boards } from "../data/data.json";
 
 // const boardsData = [...boards];
 

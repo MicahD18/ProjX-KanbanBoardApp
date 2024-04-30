@@ -23,6 +23,7 @@ import TaskCard from "../components/TaskCard";
 import Columns from "../components/Columns";
 import { Board, Column } from "../models/board.model";
 import { saveToLocalStorage } from "../utils/localStorage";
+import { RootState } from "../store";
 
 const BoardPage = () => {
   // TODO: NOTE: Changes in state for subtasks don't work when using the boardReducer, however it DOES work when using boardSlice.
@@ -47,6 +48,7 @@ const BoardPage = () => {
   const boards = useSelector(
     (state: { boardReducer: { boards: Board[] } }) => state.boardReducer.boards
   );
+  const sidebar = useSelector((state: RootState) => state.sidebarReducer);
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 
@@ -331,9 +333,9 @@ const BoardPage = () => {
 
   return (
     <div className="flex flex-row plus-jakarta">
-      <MainNav />
+      {sidebar.currentState === true ? <MainNav /> : <></>}
       <div
-        className="flex flex-row h-[93vh] w-full bg-cool_gray overflow-x-scroll"
+        className="flex flex-row h-screen w-full bg-cool_gray overflow-x-scroll"
         role="boards"
       >
         <div

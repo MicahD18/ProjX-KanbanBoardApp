@@ -2,11 +2,13 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import boardSlice from "./slices/boardSlice";
 import boardReducer from "./reducers/boardReducers";
 import modalReducer from "./reducers/modalReducer";
+import sidebarReducer from "./reducers/sidebarReducers";
 
 const rootReducer = combineReducers({
   board: boardSlice,
   boardReducer: boardReducer,
   modalReducer: modalReducer,
+  sidebarReducer: sidebarReducer,
 });
 
 const store = configureStore({

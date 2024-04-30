@@ -15,6 +15,7 @@ import { closeModal, openCreateBoardModal } from "../actions/modalActions";
 import { saveToLocalStorage } from "../utils/localStorage";
 import { useState } from "react";
 import { UniqueIdentifier } from "@dnd-kit/core";
+import { closeSidebar, openSidebar } from "../actions/sidebarActions";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -28,6 +29,8 @@ const Sidebar = () => {
   );
 
   const [boardIndex, setBoardIndex] = useState<UniqueIdentifier | null>(null);
+
+  const sidebar = useSelector((state: RootState) => state.sidebarReducer);
 
   // get the columns from the selected board
   const handleSelectBoard = (board: Board, columns: Column[], name: string) => {
@@ -57,6 +60,12 @@ const Sidebar = () => {
     dispatch(closeModal());
   };
 
+  const toggleSidebar = () => {
+    sidebar.currentState === false
+      ? dispatch(openSidebar())
+      : dispatch(closeSidebar());
+  };
+
   return (
     <div className="plus-jakarta">
       {/* EDIT BOARD DIALOG */}
@@ -68,7 +77,9 @@ const Sidebar = () => {
       </Dialog>
       <div
         role="navigation"
-        className="w-[30%] sm:w-[325px] bg-white h-screen top-0 border-solid absolute border-r-2 border-slate-300"
+        className={`w-[325px] bg-white h-screen top-0 border-solid absolute border-r-2 border-slate-300 ${
+          sidebar.currentState === true ? "visible" : "invisible"
+        }`}
       >
         <div className="flex flex-col px-8">
           <div className="flex flex-row py-7 text-[#635FC7] text-xl items-center">
@@ -107,6 +118,9 @@ const Sidebar = () => {
             </button>
           </div>
         </div>
+      </div>
+      <div className="absolute">
+        <button onClick={toggleSidebar}>Toggle Sidebar</button>
       </div>
     </div>
   );
