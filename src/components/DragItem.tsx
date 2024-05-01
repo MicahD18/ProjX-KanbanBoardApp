@@ -8,7 +8,7 @@ interface Props {
 const Item: React.FC<Props> = ({ task }) => {
   return (
     <div>
-      <TaskCard key={task.id} task={task} />
+      <TaskCard key={task.id} id={task.id} task={task} />
     </div>
   );
 };

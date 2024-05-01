@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
@@ -96,7 +97,7 @@ const EditBoardModal: React.FC<Props> = ({
       return;
     }
 
-    const updatedBoard: Board = {
+    const updatedBoard: any = {
       ...board,
       name,
       columns,
