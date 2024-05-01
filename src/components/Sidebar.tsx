@@ -2,6 +2,8 @@
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import AddIcon from "@mui/icons-material/Add";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 // models
 import { Board, Column } from "../models/board.model";
@@ -77,9 +79,9 @@ const Sidebar = () => {
       </Dialog>
       <div
         role="navigation"
-        className={`w-[325px] bg-white h-screen top-0 border-solid absolute border-r-2 border-slate-300 ${
-          sidebar.currentState === true ? "visible" : "invisible"
-        }`}
+        className={`w-[325px] bg-white h-screen top-0 border-solid absolute ${
+          sidebar.currentState ? "translate-x-0" : "-translate-x-full"
+        } transition-transform duration-300`}
       >
         <div className="flex flex-col px-8">
           <div className="flex flex-row py-7 text-[#635FC7] text-xl items-center">
@@ -119,8 +121,23 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
-      <div className="absolute">
-        <button onClick={toggleSidebar}>Toggle Sidebar</button>
+      <div className="absolute bottom-10">
+        {sidebar.currentState === true ? (
+          <button
+            onClick={toggleSidebar}
+            className="text-gray-500 h-14 transition duration-300 rounded-r-lg px-4 flex flex-row items-center hover:bg-[#f0effa] hover:text-primary_btn_idle"
+          >
+            <VisibilityOffIcon className="ml-4" />
+            <p className="ml-4 font-semibold text-md">Hide Sidebar</p>
+          </button>
+        ) : (
+          <button
+            onClick={toggleSidebar}
+            className="bg-[#635FC7] text-white w-14 h-14 hover:bg-primary_btn_hover transition duration-300 rounded-r-lg"
+          >
+            <VisibilityIcon />
+          </button>
+        )}
       </div>
     </div>
   );

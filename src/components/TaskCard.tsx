@@ -46,7 +46,7 @@ const TaskCard: React.FC<Props> = ({ id, task, handleOpenModal }) => {
           >
             {task?.title}
           </p>
-          <button {...listeners}>
+          <button {...listeners} className="cursor-grab">
             <DragIndicatorIcon />
           </button>
         </div>

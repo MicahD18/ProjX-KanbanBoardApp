@@ -240,13 +240,13 @@ const EditTaskModal: React.FC<Props> = ({
       {task && (
         <div className="modal-actions flex flex-row gap-3 items-center mt-8 justify-between">
           <button
-            className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white h-12 hover:bg-primary_btn_hover w-52"
+            className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white h-12 hover:bg-primary_btn_hover w-[45%]"
             onClick={handleSaveTask}
           >
             Save Changes
           </button>
           <button
-            className="btn button-secondary border-none w-52"
+            className="btn button-secondary border-none w-[45%]"
             onClick={handleCancel}
           >
             Cancel
@@ -256,14 +256,14 @@ const EditTaskModal: React.FC<Props> = ({
       {!task && (
         <div className="modal-actions flex flex-row gap-3 items-center mt-8 justify-between">
           <button
-            className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white h-12 hover:bg-primary_btn_hover w-52"
+            className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white h-12 hover:bg-primary_btn_hover w-[45%]"
             onClick={handleCreateTask}
             disabled={title === ""}
           >
             Create Task
           </button>
           <button
-            className="btn button-secondary border-none w-52"
+            className="btn button-secondary border-none w-[45%]"
             onClick={handleCancel}
           >
             Cancel

@@ -305,7 +305,7 @@ const BoardPage = () => {
   if (!selectedColumns) {
     return (
       <div className="flex flex-row">
-        <MainNav />
+        {sidebar.currentState === true ? <MainNav /> : <></>}
         <div className="flex flex-col items-center bg-cool_gray w-full h-screen justify-center plus-jakarta"></div>
       </div>
     );
@@ -317,7 +317,7 @@ const BoardPage = () => {
   if (selectedColumns?.length === 0) {
     return (
       <div className="flex flex-row">
-        <MainNav />
+        {sidebar.currentState === true ? <MainNav /> : <></>}
         <div className="flex flex-col items-center bg-cool_gray w-full h-screen justify-center plus-jakarta">
           <p className="text-medium_gray font-semibold text-md">
             This board is empty. Add a new column to get started.

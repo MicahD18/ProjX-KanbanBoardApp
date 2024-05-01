@@ -23,13 +23,13 @@ const DeleteBoardModal: React.FC<Props> = ({
 
       <div className="flex flex-row items-center justify-around mt-8">
         <button
-          className="btn btn-sm lg:btn-md bg-red-500 border-none plus-jakarta text-white h-12 hover:bg-red-200 hover:text-red-500 w-52"
+          className="btn btn-sm lg:btn-md bg-red-500 border-none plus-jakarta text-white h-12 hover:bg-red-200 hover:text-red-500 w-[45%]"
           onClick={() => onBoardDelete(board)}
         >
           Delete
         </button>
         <button
-          className="btn button-secondary border-none w-52"
+          className="btn button-secondary border-none w-[45%]"
           onClick={() => onClose()}
         >
           Cancel
