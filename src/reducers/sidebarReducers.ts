@@ -6,7 +6,7 @@ export type ModalState = {
 };
 
 export const initialModalState: ModalState = {
-  currentState: false,
+  currentState: true,
 };
 
 export default function sidebarReducer(
