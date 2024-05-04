@@ -17,7 +17,7 @@ import { loadFromLocalStorage } from "../utils/localStorage";
 const boardsData = loadFromLocalStorage("boards") || [];
 
 // FOR TESTING:
-localStorage.removeItem("boards");
+// localStorage.removeItem("boards");
 
 interface State {
   selectedBoard: Board | null;
