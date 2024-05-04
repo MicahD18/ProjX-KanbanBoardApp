@@ -45,6 +45,10 @@ const BoardPage = () => {
     () => selectedColumns,
     [selectedColumns]
   );
+  const selectedBoard = useSelector(
+    (state: { boardReducer: { board: Board | null } }) =>
+      state.boardReducer.board
+  );
   const boards = useSelector(
     (state: { boardReducer: { boards: Board[] } }) => state.boardReducer.boards
   );
@@ -166,11 +170,11 @@ const BoardPage = () => {
       );
       // Remove the active item from the active container and add it to the over container
       const newItems = [...memoizedSelectedColumns!];
-      const [removeditem] = newItems[activeContainerIndex!].tasks.splice(
+      const [removeditem] = newItems[activeContainerIndex].tasks.splice(
         activeItemIndex,
         1
       );
-      newItems[overContainerIndex!].tasks.push(removeditem);
+      newItems[overContainerIndex].tasks.push(removeditem);
     }
   };
 
@@ -179,6 +183,10 @@ const BoardPage = () => {
 
     // Create a new copy of boards
     const updatedBoards = [...boards];
+    // find the selectedBoard index
+    const boardIndex = updatedBoards.findIndex(
+      (board) => board.id === selectedBoard?.id
+    );
 
     // Handling Item Sorting
     if (
@@ -214,37 +222,40 @@ const BoardPage = () => {
       // If the active and over columns are the same
       if (activeColumnIndex === overColumnIndex) {
         // Update the tasks array without mutating the state
-        updatedBoards[0].columns[activeColumnIndex].tasks = arrayMove(
-          updatedBoards[0].columns[activeColumnIndex].tasks,
+        updatedBoards[boardIndex].columns[activeColumnIndex].tasks = arrayMove(
+          updatedBoards[boardIndex].columns[activeColumnIndex].tasks,
           activeItemIndex,
           overItemIndex
         );
       } else {
         const newActiveTasks = [
-          ...updatedBoards[0].columns[activeColumnIndex].tasks.slice(
+          ...updatedBoards[boardIndex].columns[activeColumnIndex].tasks.slice(
             0,
             activeItemIndex
           ),
-          ...updatedBoards[0].columns[activeColumnIndex].tasks.slice(
+          ...updatedBoards[boardIndex].columns[activeColumnIndex].tasks.slice(
             activeItemIndex + 1
           ),
         ];
 
         // Create a new tasks array for the over column with the moved item
         const newOverTasks = [
-          ...updatedBoards[0].columns[overColumnIndex].tasks.slice(
+          ...updatedBoards[boardIndex].columns[overColumnIndex].tasks.slice(
             0,
             overItemIndex
           ),
-          updatedBoards[0].columns[activeColumnIndex].tasks[activeItemIndex],
-          ...updatedBoards[0].columns[overColumnIndex].tasks.slice(
+          updatedBoards[boardIndex].columns[activeColumnIndex].tasks[
+            activeItemIndex
+          ],
+          ...updatedBoards[boardIndex].columns[overColumnIndex].tasks.slice(
             overItemIndex
           ),
         ];
 
         // Update the tasks arrays without mutating the state
-        updatedBoards[0].columns[activeColumnIndex].tasks = newActiveTasks;
-        updatedBoards[0].columns[overColumnIndex].tasks = newOverTasks;
+        updatedBoards[boardIndex].columns[activeColumnIndex].tasks =
+          newActiveTasks;
+        updatedBoards[boardIndex].columns[overColumnIndex].tasks = newOverTasks;
       }
     }
 
