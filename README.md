@@ -11,6 +11,15 @@ Handles data for:
   - modals
   - sidebar
 
+2. Implementing 'Drag & Drop' functionality using dnd-kit library
+
+3. CRUD operations for:
+- boards
+- columns
+- tasks
+
+4. Utilizing localStorage (for data integrity) 
+
 ## Installation
 
 ##### 1. 'npm install' to install the dependencies
