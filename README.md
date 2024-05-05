@@ -2,6 +2,14 @@
 
 A web application built using React where you create your own kanban boards. Add containers to your board to keep track of your tasks. Create tasks and drag & drop them anywhere on your board.
 
+## What I Learned
+
+1. Redux (for state management)
+Handles data for:
+  - boards data
+  - modals
+  - sidebar
+
 ## Installation
 
 ##### 1. 'npm install' to install the dependencies
@@ -10,3 +18,5 @@ A web application built using React where you create your own kanban boards. Add
 ## Design
 
 ##### Design credit goes to: https://www.frontendmentor.io/challenges/kanban-task-management-web-app-wgQLt-HlbB (used for reference)
+
+## 
