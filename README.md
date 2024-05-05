@@ -14,9 +14,9 @@ Handles:
 2. Implementing 'Drag & Drop' functionality using dnd-kit library
 
 3. CRUD operations for:
-- boards
-- columns
-- tasks
+  - boards
+  - columns
+  - tasks
 
 4. Utilizing localStorage (for data integrity) 
 
