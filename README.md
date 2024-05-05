@@ -2,9 +2,14 @@
 
 A web application built using React where you create your own kanban boards. Add containers to your board to keep track of your tasks. Create tasks and drag & drop them anywhere on your board.
 
+## Installation
+
+##### 1. 'npm install' to install the dependencies
+##### 2. 'npm run dev' to run local dev server
+
 ## What I Learned
 
-1. Redux (for state management)
+1. Redux (for global state management)
 
 Handles:
   - boards data
@@ -18,12 +23,7 @@ Handles:
   - columns
   - tasks
 
-4. Utilizing localStorage (for data integrity) 
-
-## Installation
-
-##### 1. 'npm install' to install the dependencies
-##### 2. 'npm run dev' to run local dev server
+4. Utilizing localStorage (for data integrity)
 
 ## Design
 
