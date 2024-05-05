@@ -6,7 +6,7 @@ A web application built using React where you create your own kanban boards. Add
 
 1. Redux (for state management)
 
-Handles data for:
+Handles:
   - boards data
   - modals
   - sidebar
