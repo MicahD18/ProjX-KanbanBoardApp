@@ -31,10 +31,10 @@ Handles:
 
 ## Process
 
-#### Using Redux
+### Using Redux
 
 ##### I began with creating a reducer and actions for handling the data:
-### Actions:
+##### Actions:
 ```typescript
 import { Board, Column, Task } from "../models/board.model";
 
@@ -80,7 +80,7 @@ export const setSelectedTask = (task: Task | null) => ({
   payload: task,
 });
 ```
-### Reducer:
+##### Reducer:
 ```typescript
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PayloadAction } from "@reduxjs/toolkit";
