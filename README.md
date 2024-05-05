@@ -9,21 +9,21 @@ A web application I built using React where you create your own kanban boards. A
 
 ## What I Learned
 
-### 1. Redux (for global state management)
+#### 1. Redux (for global state management)
 
 Handles:
   - boards data
   - modals
   - sidebar
 
-### 2. Implementing 'Drag & Drop' functionality using dnd-kit library
+#### 2. Implementing 'Drag & Drop' functionality using dnd-kit library
 
-### 3. CRUD operations for:
+#### 3. CRUD operations for:
   - boards
   - columns
   - tasks
 
-### 4. Utilizing localStorage (for data integrity)
+#### 4. Utilizing localStorage (for data integrity)
 
 ## Design
 
