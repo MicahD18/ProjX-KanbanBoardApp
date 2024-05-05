@@ -1,6 +1,6 @@
 # ProjX
 
-A web application built using React where you create your own kanban boards. Add containers to your board to keep track of your tasks. Create tasks and drag & drop them anywhere on your board.
+A web application I built using React where you create your own kanban boards. Add containers to your board to keep track of your tasks. Create tasks and drag & drop them anywhere on your board.
 
 ## Installation
 
