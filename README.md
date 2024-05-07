@@ -1,30 +1,37 @@
-# React + TypeScript + Vite
+# ProjX
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application I built using React where you create your own kanban boards. Add containers to your board to keep track of your tasks. Create tasks and drag & drop them anywhere on your board.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+##### 1. 'npm install' to install the dependencies
+##### 2. 'npm run dev' to run local dev server
 
-## Expanding the ESLint configuration
+## What I Learned
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+#### 1. Redux (for global state management)
 
-- Configure the top-level `parserOptions` property like this:
+Handles:
+  - boards data
+  - modals
+  - sidebar
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+#### 2. Implemented a 'Drag & Drop' algorithm using the dnd-kit library
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+#### 3. CRUD operations for:
+  - boards
+  - columns
+  - tasks
+
+#### 4. Utilizing localStorage (for data integrity)
+
+#### 5. Handling modals and user input
+
+## Design
+
+##### Design credit goes to: https://www.frontendmentor.io/challenges/kanban-task-management-web-app-wgQLt-HlbB (used for reference)
+
+## Architecture / high-level design
+![ProjX_system-design drawio](https://github.com/MicahD18/ProjX-KanbanBoardApp/assets/70763379/dce303b8-897f-4eeb-a152-656e112b7f49)
+### Sidebar
+##### The sidebar reducer handles the open/close of the sidebar component.
