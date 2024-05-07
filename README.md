@@ -32,3 +32,4 @@ Handles:
 ##### Design credit goes to: https://www.frontendmentor.io/challenges/kanban-task-management-web-app-wgQLt-HlbB (used for reference)
 
 ## Architecture / high-level design
+![ProjX_system-design drawio](https://github.com/MicahD18/ProjX-KanbanBoardApp/assets/70763379/dce303b8-897f-4eeb-a152-656e112b7f49)
