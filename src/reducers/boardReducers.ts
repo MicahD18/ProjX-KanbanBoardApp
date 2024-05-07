@@ -10,10 +10,10 @@ import {
 } from "../actions/boardActions";
 import { loadFromLocalStorage } from "../utils/localStorage";
 
+// Before implementing localStorage:
 // const boardsData = [...boards];
 
 // Load boards from localStorage
-
 const boardsData = loadFromLocalStorage("boards") || [];
 
 // FOR TESTING:
@@ -26,6 +26,7 @@ interface State {
   selectedTask: Task | null;
 }
 
+// set the inital state
 const initialState: State = {
   selectedBoard: null,
   boards: boardsData,
@@ -57,12 +58,15 @@ export default function boardReducer(
     case UPDATE_TASK:
       // eslint-disable-next-line no-case-declarations
       const updatedTask: Task = action.payload;
+      // Create a copy of columns array
       // eslint-disable-next-line no-case-declarations
       const newColumns =
         state.columns?.map((column) => {
+          // find the index of the updated task
           const taskIndex = column.tasks.findIndex(
             (task) => task.id === updatedTask.id
           );
+          // if an index is found, remove the old task and replace it with the updated one
           if (taskIndex !== -1) {
             return {
               ...column,
@@ -73,8 +77,9 @@ export default function boardReducer(
               ],
             };
           }
+          // else return column
           return column;
-        }) || [];
+        }) || []; // if no columns, return an empty array
       return { ...state, columns: newColumns, selectedTask: updatedTask };
     case SET_SELECTED_TASK:
       return { ...state, selectedTask: action.payload };
