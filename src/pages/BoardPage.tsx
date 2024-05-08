@@ -70,11 +70,13 @@ const BoardPage = () => {
       }))
     : [];
 
+  // Runs when a task is selected
   const handleDragStart = (event: DragStartEvent) => {
+    // extract the task object (active)
     const { active } = event;
     const { id } = active;
 
-    // activeId = task id
+    // Set the active id (activeId = task id)
     setActiveId(id);
   };
 
@@ -87,10 +89,11 @@ const BoardPage = () => {
     return task;
   };
 
+  // Runs when a task is being dragged around
   const handleDragMove = (event: DragMoveEvent) => {
     const { active, over } = event;
 
-    // Handle Item Sorting
+    // Handles item sorting (same and/or different containers regardless)
     if (
       active.id.toString().includes("item") &&
       over?.id.toString().includes("item") &&
@@ -121,10 +124,9 @@ const BoardPage = () => {
         (item) => item.id === over.id
       );
 
-      // In the same container
+      // if both indexes are in the same container, move the active item to the position of the over item
       if (activeColumnIndex === overColumnIndex) {
         const newItems = [...memoizedSelectedColumns!];
-        // if both indexes are the same, move the active item to the position of the over item
         newItems[activeColumnIndex].tasks = arrayMove(
           newItems[activeColumnIndex].tasks,
           activeItemIndex,
@@ -141,41 +143,44 @@ const BoardPage = () => {
       }
     }
 
-    // Handling Item Drop Into a Container
-    if (
-      active.id.toString().includes("item") &&
-      over?.id.toString().includes("container") &&
-      active &&
-      over &&
-      active.id !== over.id
-    ) {
-      // Find the active and over container
-      const activeContainer = findValueOfItems(active.id, "item");
-      const overContainer = findValueOfItems(over.id, "container");
+    // Handling Item Drop Into another Container
+    // if (
+    //   active.id.toString().includes("item") &&
+    //   over?.id.toString().includes("container") &&
+    //   active &&
+    //   over &&
+    //   active.id !== over.id
+    // ) {
+    //   console.log("working...");
 
-      // If the active or over container is not found, return
-      if (!activeContainer || !overContainer) return;
+    //   // Find the active and over container
+    //   const activeContainer = findValueOfItems(active.id, "item");
+    //   const overContainer = findValueOfItems(over.id, "container");
+    //   console.log(activeContainer, overContainer);
 
-      // Find the index of the active and over container
-      const activeContainerIndex = newColumns.findIndex(
-        (container) => container.id === activeContainer.id
-      );
-      const overContainerIndex = newColumns.findIndex(
-        (container) => container.id === overContainer.id
-      );
+    //   // If the active or over container is not found, return
+    //   if (!activeContainer || !overContainer) return;
 
-      // Find the index of the active and over item
-      const activeItemIndex = activeContainer.tasks.findIndex(
-        (item) => item.id === active.id
-      );
-      // Remove the active item from the active container and add it to the over container
-      const newItems = [...memoizedSelectedColumns!];
-      const [removeditem] = newItems[activeContainerIndex].tasks.splice(
-        activeItemIndex,
-        1
-      );
-      newItems[overContainerIndex].tasks.push(removeditem);
-    }
+    //   // Find the index of the active and over container
+    //   const activeContainerIndex = newColumns.findIndex(
+    //     (container) => container.id === activeContainer.id
+    //   );
+    //   const overContainerIndex = newColumns.findIndex(
+    //     (container) => container.id === overContainer.id
+    //   );
+
+    //   // Find the index of the active and over item
+    //   const activeItemIndex = activeContainer.tasks.findIndex(
+    //     (item) => item.id === active.id
+    //   );
+    //   // Remove the active item from the active container and add it to the over container
+    //   const newItems = [...memoizedSelectedColumns!];
+    //   const [removeditem] = newItems[activeContainerIndex].tasks.splice(
+    //     activeItemIndex,
+    //     1
+    //   );
+    //   newItems[overContainerIndex].tasks.push(removeditem);
+    // }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -203,7 +208,7 @@ const BoardPage = () => {
       // If the active or over container is not found, return
       if (!activeContainer || !overContainer) return;
 
-      // Find the active and over column indices
+      // Find the index of the active and over column
       const activeColumnIndex = newColumns.findIndex(
         (column) => column.id === activeContainer.id
       );
