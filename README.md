@@ -35,3 +35,7 @@ Handles:
 ![ProjX_system-design drawio](https://github.com/MicahD18/ProjX-KanbanBoardApp/assets/70763379/dce303b8-897f-4eeb-a152-656e112b7f49)
 ### Sidebar
 ##### The sidebar reducer handles the open/close of the sidebar component.
+### Modal
+##### The modal reducer sets the 'type' of modal. For example if the current modal is set to "edit", the edit modal will render.
+### Board
+##### The board reducer is a bit more complex in that it handles fetching the boards data, setting the board that the user selects, as well as handling actions inside the board.
