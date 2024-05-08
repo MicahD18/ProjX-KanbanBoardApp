@@ -45,7 +45,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
       state.boardReducer.board
   );
   const selectedTask = useSelector(
-    (state: { boardReducer: { selectedTask: Task | null } }) =>
+    (state: { boardReducer: { selectedTask: Task } }) =>
       state.boardReducer.selectedTask
   );
   // column id state to keep track and know which column a task is in
@@ -206,7 +206,7 @@ const Columns: React.FC<Props> = ({ columns }) => {
           <div className="flex flex-row items-center gap-2">
             {/* <div className="w-4 h-4 bg-primary_btn_idle rounded-xl"></div> */}
             <p className="tracking-wider text-gray-600 font-semibold ml-2 text-sm">
-              {column.name.toLocaleUpperCase()} ({column.tasks.length})
+              {column.name.toLocaleUpperCase()} ({column.tasks.length - 1})
             </p>
           </div>
 
@@ -220,14 +220,17 @@ const Columns: React.FC<Props> = ({ columns }) => {
               // ref={setNodeRef}
               className="flex flex-col gap-4 py-6 px-3 rounded-md my-12 bg-off_gray"
             >
-              {column.tasks.map((task: Task) => (
-                <TaskCard
-                  key={task.id}
-                  id={task.id}
-                  task={task}
-                  handleOpenModal={handleOpenViewModal}
-                />
-              ))}
+              {column.tasks.map((task: Task) => {
+                return (
+                  <TaskCard
+                    key={task.id}
+                    id={task.id}
+                    task={task}
+                    tasks={column.tasks}
+                    handleOpenModal={handleOpenViewModal}
+                  />
+                );
+              })}
               <button
                 className="text-medium_gray font-semibold hover:bg-gray-300 py-2 transition duration-300 rounded-md"
                 onClick={() => handleOpenCreateModal(index)}

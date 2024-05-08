@@ -78,7 +78,15 @@ const EditBoardModal: React.FC<Props> = ({
     const newColumn: Column = {
       id: `container-${uuidv4()}`,
       name: "",
-      tasks: [],
+      tasks: [
+        {
+          id: `item-${uuidv4()}`,
+          title: "",
+          description: "",
+          status: "",
+          subtasks: [],
+        },
+      ],
     };
     const updatedColumns = [...columns, newColumn];
     setColumns(updatedColumns);
