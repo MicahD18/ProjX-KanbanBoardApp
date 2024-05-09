@@ -43,3 +43,32 @@ Handles:
 ## Drag & Drop Algorithm
 
 ##### To handle the drag & drop functionality in the app, I utilized the dnd-kit library. That way I could focus on implementing the logic such as sorting tasks in a container. To break it down, it is a single algorithm that contains multiple functions and involves managing the state of the dragged items, determining their positions and destinations, updating the state accordingly, and persisting those changes.
+
+### JSX
+```JSX
+<DndContext
+            sensors={sensors}
+            collisionDetection={closestCorners}
+            onDragStart={handleDragStart}
+            onDragMove={handleDragMove}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={
+                memoizedSelectedColumns
+                  ? memoizedSelectedColumns.map((column) => ({ ...column }))
+                  : []
+              }
+            >
+              <Columns columns={memoizedSelectedColumns} />
+              <DragOverlay adjustScale={false}>
+                {activeId && (
+                  <TaskCard id={activeId} task={findTask(activeId)} />
+                )}
+              </DragOverlay>
+            </SortableContext>
+          </DndContext>
+```
+
+### handleDragStart
+##### This function is called when a drag operation starts. 
