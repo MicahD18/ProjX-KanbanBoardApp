@@ -47,28 +47,38 @@ Handles:
 ### JSX
 ```JSX
 <DndContext
-            sensors={sensors}
-            collisionDetection={closestCorners}
-            onDragStart={handleDragStart}
-            onDragMove={handleDragMove}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={
-                memoizedSelectedColumns
-                  ? memoizedSelectedColumns.map((column) => ({ ...column }))
-                  : []
-              }
-            >
-              <Columns columns={memoizedSelectedColumns} />
-              <DragOverlay adjustScale={false}>
-                {activeId && (
-                  <TaskCard id={activeId} task={findTask(activeId)} />
-                )}
-              </DragOverlay>
-            </SortableContext>
-          </DndContext>
+  sensors={sensors}
+  collisionDetection={closestCorners}
+  onDragStart={handleDragStart}
+  onDragMove={handleDragMove}
+  onDragEnd={handleDragEnd}
+>
+  <SortableContext
+    items={
+      memoizedSelectedColumns
+        ? memoizedSelectedColumns.map((column) => ({ ...column }))
+        : []
+    }
+  >
+    <Columns columns={memoizedSelectedColumns} />
+    <DragOverlay adjustScale={false}>
+      {activeId && (
+        <TaskCard id={activeId} task={findTask(activeId)} />
+      )}
+    </DragOverlay>
+  </SortableContext>
+</DndContext>
 ```
 
 ### handleDragStart
-##### This function is called when a drag operation starts. 
+##### This function is called when a drag operation starts. It extracts the ID of the active task being dragged and sets it as the active ID.
+```typescript
+const handleDragStart = (event: DragStartEvent) => {
+  const { active } = event;
+  const { id } = active;
+
+  setActiveId(id);
+};
+```
+### findTask
+##### This function takes an ID as input and tries to find the corresponding task. It searches through the columns to find the task with the provided ID. If found, it returns the task; otherwise, it returns null.
