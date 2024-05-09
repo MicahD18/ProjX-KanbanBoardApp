@@ -42,4 +42,4 @@ Handles:
 
 ## Drag & Drop Algorithm
 
-##### To handle the drag & drop functionality in the app, I utilized the dnd-kit library for handling events. That way I could focus on implementing the logic such as sorting tasks in a container.
+##### To handle the drag & drop functionality in the app, I utilized the dnd-kit library. That way I could focus on implementing the logic such as sorting tasks in a container. To break it down, it is a single algorithm that contains multiple functions and involves managing the state of the dragged items, determining their positions and destinations, updating the state accordingly, and persisting those changes.
