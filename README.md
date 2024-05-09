@@ -39,3 +39,7 @@ Handles:
 ##### The modal reducer sets the 'type' of modal. For example if the current modal is set to "edit", the edit modal will render.
 ### Board
 ##### The board reducer is a bit more complex in that it handles fetching the boards data, setting the board that the user selects, as well as handling actions inside the board.
+
+## Drag & Drop Algorithm
+
+##### To handle the drag & drop functionality in the app, I utilized the dnd-kit library for handling events. That way I could focus on implementing the logic such as sorting tasks in a container.
