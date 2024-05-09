@@ -2,6 +2,8 @@
 
 A web application I built using React where you create your own kanban boards. Add containers to your board to keep track of your tasks. Create tasks and drag & drop them anywhere on your board.
 
+![projx-project](https://github.com/MicahD18/ProjX-KanbanBoardApp/assets/70763379/171f5a65-ec6a-4c5e-b7ee-a668340a1c65)
+
 ## Installation
 
 ##### 1. 'npm install' to install the dependencies
