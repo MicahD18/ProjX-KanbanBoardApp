@@ -10,8 +10,8 @@ interface Props {
   onClose: () => void;
   onSaveBoard?: (updatedBoard: Board) => void;
   onCreateBoard?: (newBoard: Board) => void;
-  onBoardDelete: (board: Board) => void;
-  board: Board;
+  onBoardDelete?: (board: Board) => void;
+  board?: Board;
 }
 
 const EditBoardModal: React.FC<Props> = ({
@@ -230,7 +230,7 @@ const EditBoardModal: React.FC<Props> = ({
           </div>
           <button
             className="btn bg-red-500 w-full border-none text-white h-12 hover:bg-red-200 hover:text-red-500 my-8"
-            onClick={() => onBoardDelete(board)}
+            onClick={() => onBoardDelete?.(board)}
           >
             <DeleteIcon />
             Delete Board
