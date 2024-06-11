@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import App from "../../App";
+import { describe, expect, it } from "vitest";
 
-describe("App", () => {
+describe("App component", () => {
   it("should render Header, Sidebar, and Outlet components correctly when Layout is rendered", () => {
     render(<App />);
 
