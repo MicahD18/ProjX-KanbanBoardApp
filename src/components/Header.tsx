@@ -93,7 +93,7 @@ const Header = () => {
   };
 
   return (
-    <>
+    <header>
       {/* EDIT BOARD DIALOG */}
       <Dialog isOpen={currentModal === "edit_board"}>
         {selectedBoard && (
@@ -172,7 +172,7 @@ const Header = () => {
           </div>
         )}
       </div>
-    </>
+    </header>
   );
 };
 

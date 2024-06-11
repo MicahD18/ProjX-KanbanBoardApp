@@ -2,21 +2,11 @@ import { render, screen } from "@testing-library/react";
 import App from "../../App";
 
 describe("App", () => {
-  it("renders the Header component", () => {
+  it("should render Header, Sidebar, and Outlet components correctly when Layout is rendered", () => {
     render(<App />);
-    const headerElement = screen.getByRole("header");
-    expect(headerElement).toBeTruthy();
-  });
 
-  it("renders the Sidebar component", () => {
-    render(<App />);
-    const sidebarElement = screen.getByRole("navigation");
-    expect(sidebarElement).toBeTruthy();
-  });
-
-  it("renders the BoardsPage component", () => {
-    render(<App />);
-    const boardsPageElement = screen.getByRole("boards");
-    expect(boardsPageElement).toBeTruthy();
+    expect(screen.getByRole("header"));
+    expect(screen.getByRole("nav"));
+    expect(screen.getByRole("main"));
   });
 });

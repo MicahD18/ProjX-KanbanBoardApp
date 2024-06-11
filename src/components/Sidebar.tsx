@@ -69,7 +69,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="plus-jakarta">
+    <nav className="plus-jakarta" role="nav">
       {/* EDIT BOARD DIALOG */}
       <Dialog isOpen={currentModal === "create_board"}>
         <EditBoardModal
@@ -139,7 +139,7 @@ const Sidebar = () => {
           </button>
         )}
       </div>
-    </div>
+    </nav>
   );
 };
 
