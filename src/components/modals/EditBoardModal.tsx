@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import { Board, Column } from "../../models/board.model";
 import { v4 as uuidv4 } from "uuid";
@@ -9,7 +10,8 @@ interface Props {
   onClose: () => void;
   onSaveBoard?: (updatedBoard: Board) => void;
   onCreateBoard?: (newBoard: Board) => void;
-  board?: Board;
+  onBoardDelete: (board: Board) => void;
+  board: Board;
 }
 
 const EditBoardModal: React.FC<Props> = ({
@@ -17,6 +19,7 @@ const EditBoardModal: React.FC<Props> = ({
   board,
   onSaveBoard,
   onCreateBoard,
+  onBoardDelete,
 }) => {
   const [name, setName] = useState("");
   const [columns, setColumns] = useState<Column[]>([]);
@@ -210,18 +213,27 @@ const EditBoardModal: React.FC<Props> = ({
         Add New Column
       </button>
       {board && (
-        <div className="modal-actions flex flex-row gap-3 items-center mt-8 justify-between">
+        <div>
+          <div className="modal-actions flex flex-row gap-3 items-center mt-8 justify-between">
+            <button
+              className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white h-12 hover:bg-primary_btn_hover w-[45%]"
+              onClick={handleSaveBoard}
+            >
+              Save Changes
+            </button>
+            <button
+              className="btn button-secondary border-none w-[45%]"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
+          </div>
           <button
-            className="btn btn-sm lg:btn-md bg-primary_btn_idle border-none plus-jakarta text-white h-12 hover:bg-primary_btn_hover w-[45%]"
-            onClick={handleSaveBoard}
+            className="btn bg-red-500 w-full border-none text-white h-12 hover:bg-red-200 hover:text-red-500 my-8"
+            onClick={() => onBoardDelete(board)}
           >
-            Save Changes
-          </button>
-          <button
-            className="btn button-secondary border-none w-[45%]"
-            onClick={handleCancel}
-          >
-            Cancel
+            <DeleteIcon />
+            Delete Board
           </button>
         </div>
       )}

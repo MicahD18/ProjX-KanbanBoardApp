@@ -1,5 +1,5 @@
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
@@ -16,6 +16,7 @@ import EditBoardModal from "./modals/EditBoardModal";
 import { setBoard, setBoards, setColumns } from "../actions/boardActions";
 import DeleteModal from "./modals/DeleteModal";
 import { saveToLocalStorage } from "../utils/localStorage";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -101,6 +102,7 @@ const Header = () => {
             onClose={handleCloseModal}
             board={selectedBoard}
             onSaveBoard={handleBoardUpdate}
+            onBoardDelete={handleOpenDeleteBoardModal}
           />
         )}
       </Dialog>
@@ -110,7 +112,7 @@ const Header = () => {
           <DeleteModal
             board={selectedBoard}
             onBoardDelete={handleBoardDelete}
-            onClose={handleCloseModal}
+            onClose={handleOpenEditBoardModal}
           />
         )}
       </Dialog>
@@ -136,19 +138,21 @@ const Header = () => {
         {selectedBoard && (
           <div className="flex flex-row items-center gap-4">
             <button
-              className="btn bg-primary_btn_idle border-none plus-jakarta text-white hover:bg-primary_btn_hover btn-sm sm:btn-md"
+              className="btn bg-primary_btn_idle border-none plus-jakarta text-white hover:bg-primary_btn_hover btn-sm sm:btn-md mr-5"
               onClick={handleOpenEditBoardModal}
             >
-              <AddIcon />
-              <p className="hidden sm:block">Add New Column</p>
+              <EditIcon />
+              <p className="hidden sm:block">Edit Board</p>
             </button>
-            <button
+            {/* <button
               className="btn bg-transparent border-none text-medium_gray hover:text-white hover:bg-primary_btn_hover"
               onClick={handleMenuOpen}
             >
-              <MoreVertIcon />
-            </button>
-            <Menu open={open} onClose={handleMenuClose} anchorEl={anchorEl}>
+              <LogoutIcon />
+              <p className="hidden sm:block">Sign Out</p>
+            </button> */}
+            {/* // TODO: Add Menu for Profile - My Account, Support & Feedback, Language, Dark/Light Mode, Logout */}
+            {/* <Menu open={open} onClose={handleMenuClose} anchorEl={anchorEl}>
               <MenuItem
                 onClick={() => {
                   handleOpenEditBoardModal();
@@ -165,7 +169,7 @@ const Header = () => {
               >
                 <p className="text-red-500">Delete Board</p>
               </MenuItem>
-            </Menu>
+            </Menu> */}
           </div>
         )}
       </div>
