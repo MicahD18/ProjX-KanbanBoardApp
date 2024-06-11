@@ -1,11 +1,10 @@
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import EditIcon from "@mui/icons-material/Edit";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+// import { useState } from "react";
 import { RootState } from "../store";
 import { Board } from "../models/board.model";
-import { Menu, MenuItem } from "@mui/material";
+// import { Menu, MenuItem } from "@mui/material";
 import {
   closeModal,
   openDeleteBoardModal,
@@ -16,7 +15,7 @@ import EditBoardModal from "./modals/EditBoardModal";
 import { setBoard, setBoards, setColumns } from "../actions/boardActions";
 import DeleteModal from "./modals/DeleteModal";
 import { saveToLocalStorage } from "../utils/localStorage";
-import LogoutIcon from "@mui/icons-material/Logout";
+// import LogoutIcon from "@mui/icons-material/Logout";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -38,8 +37,8 @@ const Header = () => {
   );
   const sidebar = useSelector((state: RootState) => state.sidebarReducer);
   // const memoizedSelectedName = useMemo(() => selectedName, [selectedName]);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // for popup menu
-  const open = Boolean(anchorEl); // for popup menu
+  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // for popup menu
+  // const open = Boolean(anchorEl); // for popup menu
 
   // useEffect(() => {
   //   console.log(selectedBoard);
@@ -47,13 +46,13 @@ const Header = () => {
   // }, [selectedBoard, boards]);
 
   // Menu for editing/deleting board
-  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  // const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+  // const handleMenuClose = () => {
+  //   setAnchorEl(null);
+  // };
 
   const handleOpenEditBoardModal = () => {
     dispatch(openEditBoardModal());
