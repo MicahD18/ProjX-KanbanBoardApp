@@ -3,7 +3,7 @@ import App from "../../App";
 import { describe, expect, it } from "vitest";
 
 describe("App component", () => {
-  it("should render Header, Sidebar, and Outlet components correctly when Layout is rendered", () => {
+  it("should render Header, Sidebar, and Outlet components correctly when Layout is render", () => {
     render(<App />);
 
     expect(screen.getByRole("header"));
