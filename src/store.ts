@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import boardReducer from "./reducers/boardReducers";
 import modalReducer from "./reducers/modalReducer";
 import sidebarReducer from "./reducers/sidebarReducers";
+import { thunk } from "redux-thunk";
 
 export const rootReducer = combineReducers({
   boardReducer: boardReducer,
@@ -11,6 +12,7 @@ export const rootReducer = combineReducers({
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
