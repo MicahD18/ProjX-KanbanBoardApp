@@ -16,6 +16,7 @@ import { setBoard, setBoards, setColumns } from "../actions/boardActions";
 import DeleteModal from "./modals/DeleteModal";
 import { saveToLocalStorage } from "../utils/localStorage";
 // import LogoutIcon from "@mui/icons-material/Logout";
+// import { Link } from "react-router-dom";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -134,8 +135,8 @@ const Header = () => {
             {selectedBoard?.name}
           </p>
         </div>
-        {selectedBoard && (
-          <div className="flex flex-row items-center gap-4">
+        <div className="flex flex-row items-center gap-4">
+          {selectedBoard && (
             <button
               className="btn bg-primary_btn_idle border-none plus-jakarta text-white hover:bg-primary_btn_hover btn-sm sm:btn-md mr-5"
               onClick={handleOpenEditBoardModal}
@@ -143,15 +144,19 @@ const Header = () => {
               <EditIcon />
               <p className="hidden sm:block">Edit Board</p>
             </button>
-            {/* <button
-              className="btn bg-transparent border-none text-medium_gray hover:text-white hover:bg-primary_btn_hover"
+          )}
+          {/* <Link to="login">
+            <button
+              className="btn bg-transparent border-none text-medium_gray hover:text-white hover:bg-primary_btn_hover mr-5"
               onClick={handleMenuOpen}
             >
               <LogoutIcon />
               <p className="hidden sm:block">Sign Out</p>
-            </button> */}
-            {/* // TODO: Add Menu for Profile - My Account, Support & Feedback, Language, Dark/Light Mode, Logout */}
-            {/* <Menu open={open} onClose={handleMenuClose} anchorEl={anchorEl}>
+            </button>
+          </Link> */}
+        </div>
+        {/* // TODO: Add Menu for Profile - My Account, Support & Feedback, Language, Dark/Light Mode, Logout */}
+        {/* <Menu open={open} onClose={handleMenuClose} anchorEl={anchorEl}>
               <MenuItem
                 onClick={() => {
                   handleOpenEditBoardModal();
@@ -169,8 +174,6 @@ const Header = () => {
                 <p className="text-red-500">Delete Board</p>
               </MenuItem>
             </Menu> */}
-          </div>
-        )}
       </div>
     </header>
   );
