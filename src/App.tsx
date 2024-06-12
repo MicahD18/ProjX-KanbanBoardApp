@@ -5,6 +5,7 @@ import Sidebar from "./components/Sidebar";
 import BoardPage from "./pages/BoardPage";
 import { Provider } from "react-redux";
 import store from "./store";
+import AuthPage from "./pages/AuthPage";
 
 const Layout = () => {
   return (
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
         element: <BoardPage />,
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <AuthPage />,
   },
 ]);
 
