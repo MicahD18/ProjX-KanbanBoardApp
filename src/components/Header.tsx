@@ -16,10 +16,13 @@ import { setBoard, setBoards, setColumns } from "../actions/boardActions";
 import DeleteModal from "./modals/DeleteModal";
 import { saveToLocalStorage } from "../utils/localStorage";
 // import LogoutIcon from "@mui/icons-material/Logout";
-// import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+// import { logout } from "../slices/authSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
+  // const navigate = useNavigate();
+  const location = useLocation(); // Use useLocation to get the current route
   // State that handles the modals
   const { currentModal } = useSelector(
     (state: RootState) => state.modalReducer
@@ -38,7 +41,7 @@ const Header = () => {
   );
   const sidebar = useSelector((state: RootState) => state.sidebarReducer);
   // const memoizedSelectedName = useMemo(() => selectedName, [selectedName]);
-  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // for popup menu
+  // const [, setAnchorEl] = useState<null | HTMLElement>(null); // for popup menu
   // const open = Boolean(anchorEl); // for popup menu
 
   // useEffect(() => {
@@ -93,6 +96,14 @@ const Header = () => {
     handleCloseModal();
   };
 
+  // const handleSignOut = () => {
+  //   // You can add more validation logic here
+  //   // Dispatch login action
+  //   dispatch(logout());
+  //   // Redirect to the home page
+  //   navigate("/sign-in");
+  // };
+
   return (
     <header>
       {/* EDIT BOARD DIALOG */}
@@ -131,30 +142,35 @@ const Header = () => {
               ProjX
             </p>
           </div>
-          <p className="plus-jakarta text-medium_gray font-semibold ml-4 pr-8 sm:ml-0">
-            {selectedBoard?.name}
-          </p>
+          {location.pathname !== "/sign-in" &&
+            location.pathname !== "/sign-up" && (
+              <p className="plus-jakarta text-medium_gray font-semibold ml-4 pr-8 sm:ml-0">
+                {selectedBoard?.name}
+              </p>
+            )}
         </div>
-        <div className="flex flex-row items-center gap-4">
-          {selectedBoard && (
-            <button
-              className="btn bg-primary_btn_idle border-none plus-jakarta text-white hover:bg-primary_btn_hover btn-sm sm:btn-md mr-5"
-              onClick={handleOpenEditBoardModal}
-            >
-              <EditIcon />
-              <p className="hidden sm:block">Edit Board</p>
-            </button>
+        {location.pathname !== "/sign-in" &&
+          location.pathname !== "/sign-up" && (
+            <div className="flex flex-row items-center gap-4">
+              {selectedBoard && (
+                <button
+                  className="btn bg-primary_btn_idle border-none plus-jakarta text-white hover:bg-primary_btn_hover btn-sm sm:btn-md mr-5"
+                  onClick={handleOpenEditBoardModal}
+                >
+                  <EditIcon />
+                  <p className="hidden sm:block">Edit Board</p>
+                </button>
+              )}
+              {/* <button
+                className="btn bg-transparent border-none text-medium_gray hover:text-white hover:bg-primary_btn_hover mr-5"
+                onClick={handleSignOut}
+              >
+                <LogoutIcon />
+                <p className="hidden sm:block">Sign Out</p>
+              </button> */}
+            </div>
           )}
-          {/* <Link to="login">
-            <button
-              className="btn bg-transparent border-none text-medium_gray hover:text-white hover:bg-primary_btn_hover mr-5"
-              onClick={handleMenuOpen}
-            >
-              <LogoutIcon />
-              <p className="hidden sm:block">Sign Out</p>
-            </button>
-          </Link> */}
-        </div>
+
         {/* // TODO: Add Menu for Profile - My Account, Support & Feedback, Language, Dark/Light Mode, Logout */}
         {/* <Menu open={open} onClose={handleMenuClose} anchorEl={anchorEl}>
               <MenuItem
