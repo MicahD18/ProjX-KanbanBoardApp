@@ -5,9 +5,12 @@ import Sidebar from "./components/Sidebar";
 import BoardPage from "./pages/BoardPage";
 import { Provider } from "react-redux";
 import store from "./store";
-import AuthPage from "./pages/AuthPage";
+import SignIn from "./components/SignIn";
+import SignUp from "./components/SignUp";
+import PrivateRoute from "./components/utils/PrivateRoute";
+import PublicRoute from "./components/utils/PublicRoute";
 
-const Layout = () => {
+const MainLayout = () => {
   return (
     <div>
       <Header />
@@ -19,20 +22,59 @@ const Layout = () => {
   );
 };
 
+const AuthLayout = () => {
+  return (
+    <div>
+      <Header />
+      <main className="bg-cool_gray flex flex-row items-center w-full h-screen justify-center">
+        <Outlet />
+      </main>
+    </div>
+  );
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: <PrivateRoute />, // Protecting main layout with PrivateRoute
     children: [
       {
         path: "/",
-        element: <BoardPage />,
+        element: <MainLayout />,
+        children: [
+          {
+            path: "/",
+            element: <BoardPage />,
+          },
+        ],
       },
     ],
   },
   {
-    path: "/login",
-    element: <AuthPage />,
+    path: "/",
+    element: <PublicRoute />, // Protecting auth layout with PublicRoute
+    children: [
+      {
+        path: "/sign-in",
+        element: <AuthLayout />,
+        children: [
+          {
+            path: "/sign-in",
+            element: <SignIn />,
+          },
+        ],
+      },
+      {
+        path: "/sign-up",
+        element: <AuthLayout />,
+        children: [
+          {
+            path: "/sign-up",
+            element: <SignUp />,
+          },
+        ],
+      },
+    ],
   },
 ]);
 

@@ -2,12 +2,14 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import boardReducer from "./reducers/boardReducers";
 import modalReducer from "./reducers/modalReducer";
 import sidebarReducer from "./reducers/sidebarReducers";
+import authReducer from "./slices/authSlice";
 import { thunk } from "redux-thunk";
 
 export const rootReducer = combineReducers({
   boardReducer: boardReducer,
   modalReducer: modalReducer,
   sidebarReducer: sidebarReducer,
+  auth: authReducer,
 });
 
 const store = configureStore({
