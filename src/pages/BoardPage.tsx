@@ -46,8 +46,8 @@ const BoardPage = () => {
     [selectedColumns]
   );
   const selectedBoard = useSelector(
-    (state: { boardReducer: { board: Board | null } }) =>
-      state.boardReducer.board
+    (state: { boardReducer: { selectedBoard: Board | null } }) =>
+      state.boardReducer.selectedBoard
   );
   const boards = useSelector(
     (state: { boardReducer: { boards: Board[] } }) => state.boardReducer.boards

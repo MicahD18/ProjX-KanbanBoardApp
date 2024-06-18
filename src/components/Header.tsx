@@ -16,13 +16,11 @@ import { setBoard, setBoards, setColumns } from "../actions/boardActions";
 import DeleteModal from "./modals/DeleteModal";
 import { saveToLocalStorage } from "../utils/localStorage";
 // import LogoutIcon from "@mui/icons-material/Logout";
-import { useLocation } from "react-router-dom";
 // import { logout } from "../slices/authSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
   // const navigate = useNavigate();
-  const location = useLocation(); // Use useLocation to get the current route
   // State that handles the modals
   const { currentModal } = useSelector(
     (state: RootState) => state.modalReducer
@@ -35,9 +33,10 @@ const Header = () => {
   const boards = useSelector(
     (state: { boardReducer: { boards: Board[] } }) => state.boardReducer.boards
   );
+  // TODO: Change all useSelectors in app to selectedBoard instead of board
   const selectedBoard = useSelector(
-    (state: { boardReducer: { board: Board | null } }) =>
-      state.boardReducer.board
+    (state: { boardReducer: { selectedBoard: Board | null } }) =>
+      state.boardReducer.selectedBoard
   );
   const sidebar = useSelector((state: RootState) => state.sidebarReducer);
   // const memoizedSelectedName = useMemo(() => selectedName, [selectedName]);

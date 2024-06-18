@@ -53,7 +53,7 @@ export default function boardReducer(
     case SET_BOARD:
       return {
         ...state,
-        board: action.payload,
+        selectedBoard: action.payload,
       };
     case UPDATE_TASK:
       // eslint-disable-next-line no-case-declarations

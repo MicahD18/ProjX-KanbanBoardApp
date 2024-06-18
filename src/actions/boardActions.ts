@@ -16,10 +16,10 @@ export const setColumns = (columns: Column[] | null) => {
   };
 };
 
-export const setBoard = (board: Board | null) => {
+export const setBoard = (selectedBoard: Board | null) => {
   return {
     type: SET_BOARD,
-    payload: board,
+    payload: selectedBoard,
   };
 };
 

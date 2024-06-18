@@ -41,8 +41,8 @@ const Columns: React.FC<Props> = ({ columns }) => {
   //   (state: RootState) => state.board.selectedTask
   // );
   const selectedBoard = useSelector(
-    (state: { boardReducer: { board: Board | null } }) =>
-      state.boardReducer.board
+    (state: { boardReducer: { selectedBoard: Board | null } }) =>
+      state.boardReducer.selectedBoard
   );
   const selectedTask = useSelector(
     (state: { boardReducer: { selectedTask: Task } }) =>
