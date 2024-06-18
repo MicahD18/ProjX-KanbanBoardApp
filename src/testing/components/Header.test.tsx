@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, fireEvent } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
@@ -43,7 +44,7 @@ const initialState = {
 
 const store = configureStore({
   reducer: rootReducer,
-  preloadedState: initialState,
+  preloadedState: initialState as any,
 });
 
 describe("Header Component", () => {
