@@ -19,19 +19,32 @@ const rootReducer = combineReducers({
   authSlice,
 });
 
-// const initialState = {
-//   boardReducer: {
-//     selectedBoard: { id: 1, name: "Test Board", columns: [] },
-//     boards: [],
-//     columns: null,
-//     selectedTask: null,
-//   },
-//   modalReducer: { currentModal: null },
-//   sidebarReducer: { currentState: false },
-//   authSlice: { isAuthenticated: true },
-// };
+const initialState = {
+  boardReducer: {
+    selectedBoard: {
+      id: "board-bfeaa29b-5757-435b-9f80-71cd5e3c60c9",
+      name: "Test Board",
+      columns: [],
+    },
+    boards: [
+      {
+        id: "board-bfeaa29b-5757-435b-9f80-71cd5e3c60c9",
+        name: "Test Board",
+        columns: [],
+      },
+    ],
+    columns: [],
+    selectedTask: null,
+  },
+  modalReducer: { currentModal: null },
+  sidebarReducer: { currentState: false },
+  authSlice: { isAuthenticated: true },
+};
 
-const store = configureStore({ reducer: rootReducer });
+const store = configureStore({
+  reducer: rootReducer,
+  preloadedState: initialState,
+});
 
 describe("Header Component", () => {
   beforeEach(() => {
