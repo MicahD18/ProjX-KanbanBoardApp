@@ -9,6 +9,7 @@ import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import PrivateRoute from "./components/utils/PrivateRoute";
 import PublicRoute from "./components/utils/PublicRoute";
+import NotFound from "./pages/NotFound";
 
 const MainLayout = () => {
   return (
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />, // Catch-all route for 404 Not Found page
   },
 ]);
 

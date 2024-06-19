@@ -143,7 +143,7 @@ const Header = () => {
           </div>
           {location.pathname !== "/sign-in" &&
             location.pathname !== "/sign-up" && (
-              <p className="plus-jakarta text-medium_gray font-semibold ml-4 pr-8 sm:ml-0">
+              <p className="plus-jakarta text-medium_gray font-semibold ml-4 pr-0 sm:ml-0 w-36">
                 {selectedBoard?.name}
               </p>
             )}
