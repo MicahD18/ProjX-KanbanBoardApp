@@ -244,7 +244,7 @@ const EditBoardModal: React.FC<Props> = ({
             onClick={handleCreateBoard}
             disabled={name === ""}
           >
-            Create New Board
+            Create Board
           </button>
           <button
             className="btn button-secondary border-none w-[45%]"

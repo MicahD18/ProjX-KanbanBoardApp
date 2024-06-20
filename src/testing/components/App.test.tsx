@@ -7,7 +7,7 @@ describe("App component", () => {
     render(<App />);
 
     expect(screen.getByRole("header"));
-    expect(screen.getByRole("nav"));
+    expect(screen.getByRole("sidebar"));
     expect(screen.getByRole("main"));
   });
 });

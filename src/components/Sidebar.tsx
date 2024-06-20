@@ -8,8 +8,13 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 // models
 import { Board, Column } from "../models/board.model";
 import { useDispatch, useSelector } from "react-redux";
-import { setBoard, setBoards, setColumns } from "../actions/boardActions";
-import { setName } from "../slices/boardSlice";
+import {
+  setBoard,
+  setBoardName,
+  setBoards,
+  setColumns,
+} from "../actions/boardActions";
+// import { setName } from "../slices/boardSlice";
 import Dialog from "./Dialog";
 import EditBoardModal from "./modals/EditBoardModal";
 import { RootState } from "../store";
@@ -41,7 +46,7 @@ const Sidebar = () => {
 
     // 1. dispatch the setColumns action with the selected board data
     dispatch(setColumns(columns)); // columns -> BoardsPage component
-    dispatch(setName(name)); // name -> Header component
+    dispatch(setBoardName(name)); // name -> Header component
     dispatch(setBoard(board));
   };
 
@@ -69,7 +74,7 @@ const Sidebar = () => {
   };
 
   return (
-    <nav className="plus-jakarta" role="nav">
+    <nav className="plus-jakarta" role="sidebar">
       {/* EDIT BOARD DIALOG */}
       <Dialog isOpen={currentModal === "create_board"}>
         <EditBoardModal
@@ -126,6 +131,7 @@ const Sidebar = () => {
           <button
             onClick={toggleSidebar}
             className="text-gray-500 h-14 transition duration-300 rounded-r-lg px-4 flex flex-row items-center hover:bg-[#f0effa] hover:text-primary_btn_idle"
+            data-testid="toggle-sidebar-button"
           >
             <VisibilityOffIcon className="ml-4" />
             <p className="ml-4 font-semibold text-md">Hide Sidebar</p>
@@ -134,8 +140,9 @@ const Sidebar = () => {
           <button
             onClick={toggleSidebar}
             className="bg-[#635FC7] text-white w-14 h-14 hover:bg-primary_btn_hover transition duration-300 rounded-r-lg"
+            data-testid="toggle-sidebar-button"
           >
-            <VisibilityIcon />
+            <VisibilityIcon role="VisibilityIcon" />
           </button>
         )}
       </div>

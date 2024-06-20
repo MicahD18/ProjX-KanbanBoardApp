@@ -7,6 +7,7 @@ import {
   SET_COLUMNS,
   SET_BOARD,
   SET_BOARDS,
+  SET_BOARD_NAME,
 } from "../actions/boardActions";
 import { loadFromLocalStorage } from "../utils/localStorage";
 
@@ -83,6 +84,17 @@ export default function boardReducer(
       return { ...state, columns: newColumns, selectedTask: updatedTask };
     case SET_SELECTED_TASK:
       return { ...state, selectedTask: action.payload };
+    case SET_BOARD_NAME:
+      if (state.selectedBoard) {
+        return {
+          ...state,
+          selectedBoard: {
+            ...state.selectedBoard,
+            name: action.payload,
+          },
+        };
+      }
+      return state;
     default:
       return state;
   }
